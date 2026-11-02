@@ -4,6 +4,6 @@
   "automaticApplicationUpdates": false,
   "upstream": {
     "repository": "https://github.com/clash-verge-rev/clash-verge-rev",
-    "baseRevision": "ebd78ae9ffb8c8e5632339bc65a2c9345b27a8f2"
+    "baseRevision": "f149604eb679e0d5eade68d7c57d1ae15c767a2a"
   }
 }

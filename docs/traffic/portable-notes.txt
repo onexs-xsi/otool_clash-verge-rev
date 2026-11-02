@@ -6,7 +6,7 @@ Clash Verge Rev {{APP_VERSION}} - 流量页面版 {{TRAFFIC_VERSION}}（Windows 
 3. 本版本沿用当前 Windows 用户的 Clash Verge 设置和订阅。沿用 v7–v10 的 SQLite 流量数据库，不清空历史，不导入旧 JSON。
 
 v11 调整
-- 合并主仓库 dev，截至 ebd78ae9（2026-11-03），宿主版本 2.5.10。
+- 合并主仓库 dev，截至 f149604e（2026-11-03），宿主版本 2.5.10。
 - 流量命令与配置接入主线的生成式类型接口，保留五秒采样、历史、应用识别和只读 WSL 监测。
 
 v10 保留调整

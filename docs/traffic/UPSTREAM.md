@@ -1,6 +1,6 @@
 # Keeping the fork close to upstream
 
-v11 incorporates upstream `dev` commit `ebd78ae9ffb8c8e5632339bc65a2c9345b27a8f2` (2026-11-03), host version 2.5.10. Five textual merge conflicts were resolved in release workflow orchestration, dependency manifests/lockfile, command registration and configuration types; generated IPC ownership was preserved.
+v11 incorporates upstream `dev` commit `f149604eb679e0d5eade68d7c57d1ae15c767a2a` (2026-11-03), host version 2.5.10. Five textual merge conflicts were resolved in release workflow orchestration, dependency manifests/lockfile, command registration and configuration types; generated IPC ownership was preserved.
 
 The recorded baseline is `upstream.baseRevision` in `traffic.edition.json`. Upstream application versions and Traffic edition numbers are separate: importing a new host version must not rename or overwrite an existing portable edition.
 
