@@ -92,6 +92,7 @@ const STARTUP_LANGUAGE_SECTIONS = [
   'tests',
   'rules',
   'connections',
+  'traffic',
   'logs',
 ] as const
 
@@ -116,7 +117,11 @@ const loadLanguageSections = async (
   try {
     const entries = await Promise.all(
       sections.map(async (section) => {
-        const loader = localeLoaders[language]?.[section]
+        const loader =
+          localeLoaders[language]?.[section] ??
+          (section === 'traffic'
+            ? localeLoaders[FALLBACK_LANGUAGE]?.[section]
+            : undefined)
         if (!loader) {
           throw new Error(
             `Locale loader not found for language "${language}" section "${section}"`,

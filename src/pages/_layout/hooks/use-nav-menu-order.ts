@@ -22,7 +22,7 @@ const createNavLookup = <T extends { path: string }>(items: readonly T[]) => {
   return { map, defaultOrder }
 }
 
-const resolveMenuOrder = <T extends { path: string }>(
+export const resolveMenuOrder = <T extends { path: string }>(
   order: string[] | null | undefined,
   defaultOrder: string[],
   map: Map<string, T>,
@@ -39,11 +39,20 @@ const resolveMenuOrder = <T extends { path: string }>(
     }
   }
 
-  for (const path of defaultOrder) {
-    if (!seen.has(path)) {
-      resolved.push(path)
-      seen.add(path)
+  for (let index = 0; index < defaultOrder.length; index += 1) {
+    const path = defaultOrder[index]
+    if (seen.has(path)) continue
+
+    let insertionIndex = 0
+    for (let previous = index - 1; previous >= 0; previous -= 1) {
+      const existingIndex = resolved.indexOf(defaultOrder[previous])
+      if (existingIndex !== -1) {
+        insertionIndex = existingIndex + 1
+        break
+      }
     }
+    resolved.splice(insertionIndex, 0, path)
+    seen.add(path)
   }
 
   return resolved

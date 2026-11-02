@@ -12,6 +12,7 @@
     "dev:tauri": "cross-env RUST_BACKTRACE=full tauri dev -f tauri-dev",
     "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096' tauri build",
     "build:fast": "cross-env NODE_OPTIONS='--max-old-space-size=4096' tauri build -- --profile fast-release",
+    "portable": "node scripts/traffic/package.mjs",
     "tauri": "tauri",
     "web:dev": "vite",
     "web:build": "tsc --noEmit && vite build",
@@ -40,7 +41,10 @@
     "perf:build": "node scripts/perf/build.mjs",
     "perf:run": "node scripts/perf/run.mjs",
     "perf:compare": "node scripts/perf/compare.mjs",
-    "perf:test": "node --test scripts/perf/report.test.mjs"
+    "perf:test": "node --test scripts/perf/report.test.mjs",
+    "traffic:check": "node scripts/traffic/check-boundaries.mjs",
+    "traffic:upstream": "node scripts/traffic/upstream.mjs",
+    "traffic:test:package": "node --test scripts/traffic/package.test.mjs"
   },
   "dependencies": {
     "@dnd-kit/collision": "^0.5.0",

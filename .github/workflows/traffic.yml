@@ -1,0 +1,88 @@
+name: Traffic edition
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'src-tauri/src/**'
+      - 'scripts/traffic/**'
+      - 'docs/traffic/**'
+      - 'traffic.edition.json'
+      - 'Cargo.*'
+      - 'src-tauri/Cargo.toml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/traffic.yml'
+  workflow_dispatch:
+    inputs:
+      edition:
+        description: Portable edition number
+        type: string
+        required: true
+        default: '10'
+
+permissions:
+  contents: read
+
+env:
+  HUSKY: 0
+  VITE_TRAFFIC_REPOSITORY: https://github.com/${{ github.repository }}
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm traffic:check
+      - run: pnpm arch:check
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: pnpm
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: traffic-native-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm prebuild
+      - run: pnpm web:build
+      - run: ./scripts/traffic/test-native.ps1
+        shell: pwsh
+      - run: pnpm traffic:test:package
+      - name: Build portable archive
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TRAFFIC_EDITION: ${{ inputs.edition }}
+        run: pnpm portable --version $env:TRAFFIC_EDITION
+        shell: pwsh
+      - uses: actions/upload-artifact@v7
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: traffic-v${{ inputs.edition }}-windows-x64
+          path: releases/archive/v*/
+          if-no-files-found: error

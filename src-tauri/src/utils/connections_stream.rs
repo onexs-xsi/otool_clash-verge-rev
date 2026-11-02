@@ -77,6 +77,28 @@ pub async fn connect_traffic_stream() -> Result<MihomoWsEventStream<TrafficSpeed
     })
 }
 
+pub async fn connect_connections_stream() -> Result<MihomoWsEventStream<serde_json::Value>> {
+    let (message_tx, message_rx) = mpsc::channel(MIHOMO_WS_STREAM_BUFFER_SIZE);
+    let connection_id = handle::Handle::mihomo()
+        .ws_connections({
+            let message_tx = message_tx.clone();
+            move |message| {
+                if let Ok(value) = serde_json::from_slice::<serde_json::Value>(&message)
+                    && value.get("connections").is_some()
+                {
+                    try_send_internal_event(&message_tx, InternalWsEvent::Data(value));
+                }
+            }
+        })
+        .await?;
+    drop(message_tx);
+    Ok(MihomoWsEventStream {
+        connection_id,
+        receiver: message_rx,
+        last_valid_event_at: Instant::now(),
+    })
+}
+
 impl<T> MihomoWsEventStream<T> {
     pub async fn next_event<F>(&mut self, stale_timeout: Duration, should_exit: F) -> StreamConsumeState<T>
     where

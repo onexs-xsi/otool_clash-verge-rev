@@ -1,0 +1,9 @@
+{
+  "displayName": "Clash Verge Rev · Traffic",
+  "repository": null,
+  "automaticApplicationUpdates": false,
+  "upstream": {
+    "repository": "https://github.com/clash-verge-rev/clash-verge-rev",
+    "baseRevision": "4337bd85758d54d7b9044b2da3c9ac1176eae1f3"
+  }
+}

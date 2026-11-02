@@ -4,6 +4,10 @@ import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DialogRef, TooltipIcon } from '@/components/base'
+import {
+  automaticApplicationUpdates,
+  TrafficUpdateViewer,
+} from '@/features/traffic'
 import { updateLastCheckTime } from '@/hooks/use-update'
 import {
   exitApp,
@@ -45,6 +49,10 @@ const SettingVergeAdvanced = ({ onError: _ }: Props) => {
   const liteModeRef = useRef<DialogRef>(null)
 
   const onCheckUpdate = async () => {
+    if (!automaticApplicationUpdates) {
+      updateRef.current?.open()
+      return
+    }
     try {
       const info = await checkUpdate()
       updateLastCheckTime()
@@ -85,7 +93,11 @@ const SettingVergeAdvanced = ({ onError: _ }: Props) => {
       <HotkeyViewer ref={hotkeyRef} />
       <MiscViewer ref={miscRef} />
       <LayoutViewer ref={layoutRef} />
-      <UpdateViewer ref={updateRef} />
+      {automaticApplicationUpdates ? (
+        <UpdateViewer ref={updateRef} />
+      ) : (
+        <TrafficUpdateViewer ref={updateRef} />
+      )}
       <BackupViewer ref={backupRef} />
       <LiteModeViewer ref={liteModeRef} />
 
@@ -128,7 +140,11 @@ const SettingVergeAdvanced = ({ onError: _ }: Props) => {
 
       <SettingItem
         onClick={onCheckUpdate}
-        label={t('settings.components.verge.advanced.fields.checkUpdates')}
+        label={
+          automaticApplicationUpdates
+            ? t('settings.components.verge.advanced.fields.checkUpdates')
+            : t('traffic.manualUpdates')
+        }
       />
 
       <SettingItem

@@ -36,6 +36,7 @@ interface IConfigData {
   }
   secret: string
   'unified-delay': boolean
+  'find-process-mode'?: 'always' | 'strict' | 'off'
   tun: {
     stack: string
     device: string
@@ -868,6 +869,13 @@ interface IVergeConfig {
   clash_core?: string
   theme_mode?: 'light' | 'dark' | 'system'
   traffic_graph?: boolean
+  traffic_pinned_apps?: string[]
+  traffic_visible_columns?: string[]
+  traffic_group_by_application?: boolean
+  traffic_hide_direct_only?: boolean
+  traffic_recent_active_only?: boolean
+  enable_wsl_traffic_monitor?: boolean
+  wsl_monitor_distribution?: string
   enable_memory_usage?: boolean
   enable_group_icon?: boolean
   pause_render_traffic_stats_on_blur?: boolean

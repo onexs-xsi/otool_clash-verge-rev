@@ -35,6 +35,25 @@ pub struct IVerge {
 
     pub traffic_graph: Option<bool>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub traffic_pinned_apps: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub traffic_visible_columns: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub traffic_group_by_application: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub traffic_hide_direct_only: Option<bool>,
+    pub traffic_recent_active_only: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_wsl_traffic_monitor: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wsl_monitor_distribution: Option<String>,
+
     /// show memory info (only for Clash Meta)
     pub enable_memory_usage: Option<bool>,
 
@@ -420,6 +439,13 @@ impl IVerge {
         patch!(start_page);
         patch!(startup_script);
         patch!(traffic_graph);
+        patch!(traffic_pinned_apps);
+        patch!(traffic_visible_columns);
+        patch!(traffic_group_by_application);
+        patch!(traffic_hide_direct_only);
+        patch!(traffic_recent_active_only);
+        patch!(enable_wsl_traffic_monitor);
+        patch!(wsl_monitor_distribution);
         patch!(enable_memory_usage);
         patch!(enable_group_icon);
         patch!(pause_render_traffic_stats_on_blur);
