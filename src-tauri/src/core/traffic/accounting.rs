@@ -414,6 +414,11 @@ impl TrafficAccounting {
     }
 }
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "Invalid fixtures should fail tests."
+)]
 mod tests {
     use super::*;
 
@@ -677,7 +682,7 @@ mod tests {
         state.observe("2026-10-30", &[a.clone(), b], 2.0);
         let key = key("2026-10-30", "app", "a.exe", "DIRECT");
         assert_eq!(state.duration(&key), Some(2000));
-        state.observe("2026-10-30", &[a.clone()], 20.0);
+        state.observe("2026-10-30", std::slice::from_ref(&a), 20.0);
         assert_eq!(state.duration(&key), Some(2000));
         state.reset_interval();
         state.observe("2026-10-30", &[a], 1.0);

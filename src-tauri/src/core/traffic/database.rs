@@ -520,6 +520,11 @@ impl Database {
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "Invalid fixtures should fail tests."
+)]
 mod tests {
     use super::*;
     struct TemporaryDatabase(std::path::PathBuf);
@@ -751,14 +756,13 @@ mod tests {
             group,
         };
         let mut accounting = super::super::accounting::TrafficAccounting::from_totals(
-            [(
+            std::iter::once((
                 key.clone(),
                 TrafficBytes {
                     upload: 100,
                     download: 200,
                 },
-            )]
-            .into_iter()
+            ))
             .collect(),
         );
         accounting.restore_checkpoint(initialized, checkpoint);

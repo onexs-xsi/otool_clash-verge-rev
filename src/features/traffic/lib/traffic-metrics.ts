@@ -12,14 +12,14 @@ export const formatTrafficDuration = (
   const minutes = Math.floor((seconds % 3600) / 60)
   return `${incomplete ? '≥ ' : ''}${hours ? `${hours}h ` : ''}${minutes ? `${minutes}m ` : ''}${seconds % 60}s`
 }
-export type TrafficByteField =
+type TrafficByteField =
   | 'uploadRate'
   | 'downloadRate'
   | 'dayUpload'
   | 'dayDownload'
   | 'monthUpload'
   | 'monthDownload'
-export const trafficByteFields: TrafficByteField[] = [
+const trafficByteFields: TrafficByteField[] = [
   'uploadRate',
   'downloadRate',
   'dayUpload',
@@ -40,18 +40,6 @@ export function trafficRoute(chain: string): TrafficRoute {
 export type TrafficMetricRow = TrafficStatisticsRow & {
   all: TrafficStatisticsRow
   chains?: string[]
-}
-
-export function proxyTrafficRow(row: TrafficStatisticsRow): TrafficMetricRow {
-  if (trafficRoute(row.chain) === 'proxy') return { ...row, all: row }
-  return {
-    ...row,
-    ...Object.fromEntries(trafficByteFields.map((field) => [field, 0])),
-    dayDurationMs: 0,
-    durationIncomplete: false,
-    lastActivityAt: null,
-    all: row,
-  }
 }
 
 export function sumTrafficRows(

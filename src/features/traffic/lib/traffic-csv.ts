@@ -1,6 +1,6 @@
 import type { TrafficMetricRow } from './traffic-metrics'
 
-export const trafficCsvFields = [
+const trafficCsvFields = [
   'app',
   'path',
   'chain',

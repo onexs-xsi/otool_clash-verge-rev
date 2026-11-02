@@ -365,6 +365,11 @@ mod platform {
     }
 
     #[cfg(test)]
+    #[allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        reason = "Invalid fixtures should fail tests."
+    )]
     mod tests {
         use super::*;
         #[test]
@@ -385,17 +390,17 @@ mod platform {
             let source = socket.local.addr();
             let remote = socket.remote.addr();
             assert_eq!(
-                identity("Ubuntu", &[socket.clone()], "tcp", source, Some(remote)).0,
+                identity("Ubuntu", std::slice::from_ref(&socket), "tcp", source, Some(remote)).0,
                 "WSL:Ubuntu/curl"
             );
             assert_eq!(
-                identity("Ubuntu", &[socket.clone()], "udp", source, Some(remote)).0,
+                identity("Ubuntu", std::slice::from_ref(&socket), "udp", source, Some(remote)).0,
                 "WSL:Ubuntu/?"
             );
             assert_eq!(
                 identity(
                     "Ubuntu",
-                    &[socket.clone()],
+                    std::slice::from_ref(&socket),
                     "tcp",
                     source,
                     Some("1.1.1.1:80".parse().unwrap())
@@ -439,8 +444,8 @@ mod platform {
             assert_eq!(
                 nat_identity(
                     "Ubuntu",
-                    &[socket.clone()],
-                    &[session.clone()],
+                    std::slice::from_ref(&socket),
+                    std::slice::from_ref(&session),
                     "tcp",
                     session.external_source,
                     Some(session.external_destination)
@@ -452,8 +457,8 @@ mod platform {
             assert!(
                 nat_identity(
                     "Ubuntu",
-                    &[socket.clone()],
-                    &[session.clone()],
+                    std::slice::from_ref(&socket),
+                    std::slice::from_ref(&session),
                     "udp",
                     session.external_source,
                     Some(session.external_destination)
@@ -463,8 +468,8 @@ mod platform {
             assert!(
                 nat_identity(
                     "Ubuntu",
-                    &[socket.clone()],
-                    &[session.clone()],
+                    std::slice::from_ref(&socket),
+                    std::slice::from_ref(&session),
                     "tcp",
                     session.external_source,
                     Some("1.1.1.1:80".parse().unwrap())
@@ -473,7 +478,7 @@ mod platform {
             );
             let other = NatSession {
                 internal_source: "172.20.0.2:1235".parse().unwrap(),
-                ..session.clone()
+                ..session
             };
             assert!(
                 nat_identity(

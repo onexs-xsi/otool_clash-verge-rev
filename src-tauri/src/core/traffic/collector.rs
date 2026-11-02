@@ -1150,6 +1150,11 @@ pub(crate) async fn clear_history(day: Option<String>) -> Result<()> {
     .context("Traffic clear worker stopped")?
 }
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "Invalid fixtures should fail tests."
+)]
 mod tests {
     use super::samples_from_payload;
 

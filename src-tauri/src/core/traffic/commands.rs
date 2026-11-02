@@ -134,6 +134,11 @@ pub async fn get_traffic_application_processes(
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "Invalid fixtures should fail tests."
+)]
 mod tests {
     #[tokio::test]
     async fn traffic_csv_export_writes_the_chosen_file_and_rejects_other_formats() {

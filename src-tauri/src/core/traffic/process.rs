@@ -55,6 +55,7 @@ pub(crate) fn application_identity(app: &str, path: &str) -> (String, String) {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, reason = "Invalid fixtures should fail tests.")]
 #[test]
 fn traffic_application_identity_matches_frontend_fixtures() {
     let fixtures: serde_json::Value = serde_json::from_str(include_str!(
@@ -661,6 +662,11 @@ impl ProcessSnapshot {
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "Invalid fixtures should fail tests."
+)]
 mod tests {
     use super::*;
 
@@ -708,7 +714,7 @@ mod tests {
             }],
             entries: Vec::new(),
             captured_at: u64::MAX,
-            local_addresses: [endpoint("192.168.1.2:0").ip()].into_iter().collect(),
+            local_addresses: std::iter::once(endpoint("192.168.1.2:0").ip()).collect(),
         };
         assert_eq!(
             snapshot

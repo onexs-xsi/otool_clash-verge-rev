@@ -134,14 +134,6 @@ export async function getTrafficApplicationSeries(
   )
 }
 
-export async function getTrafficApplicationHistory(
-  app: string,
-  path: string,
-  month: string,
-) {
-  return commands.getTrafficApplicationHistory(app, path, month)
-}
-
 export async function getTrafficAppIcon(path: string, app = '') {
   return commands.getTrafficAppIcon(path, app)
 }

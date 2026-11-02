@@ -656,6 +656,11 @@ pub(crate) fn executable_icon(_path: &str) -> Option<String> {
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    reason = "Invalid fixtures should fail tests."
+)]
 mod tests {
     use super::executable_icon;
 
