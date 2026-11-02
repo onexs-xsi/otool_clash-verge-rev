@@ -10,7 +10,7 @@ pub(crate) fn is_proxy_chain(chain: &str) -> bool {
     )
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct DiagnosticRecord {
     pub destination: String,
@@ -25,8 +25,10 @@ pub(crate) struct DiagnosticRecord {
     #[serde(default)]
     pub inbound_type: String,
     #[serde(default)]
+    #[specta(type = Option<String>)]
     pub lookup_local: Option<std::net::SocketAddr>,
     #[serde(default)]
+    #[specta(type = Option<String>)]
     pub lookup_remote: Option<std::net::SocketAddr>,
     #[serde(default)]
     pub process: Option<super::process::ApplicationProcess>,
@@ -219,14 +221,14 @@ impl TrafficAccounting {
                     network: diagnostic.network.clone(),
                     reason: diagnostic.reason.clone(),
                 };
-                if !records.contains_key(&diagnostic_key) && records.len() >= MAX_DIAGNOSTICS_PER_GROUP_DAY {
-                    if let Some(oldest) = records
+                if !records.contains_key(&diagnostic_key)
+                    && records.len() >= MAX_DIAGNOSTICS_PER_GROUP_DAY
+                    && let Some(oldest) = records
                         .iter()
                         .min_by(|(_, a), (_, b)| a.last_seen.cmp(&b.last_seen))
                         .map(|(key, _)| key.clone())
-                    {
-                        records.remove(&oldest);
-                    }
+                {
+                    records.remove(&oldest);
                 }
                 let record = records.entry(diagnostic_key).or_insert_with(|| diagnostic.clone());
                 record.source.clone_from(&diagnostic.source);
@@ -336,13 +338,13 @@ impl TrafficAccounting {
             }
         }
     }
-    pub fn totals(&self) -> &BTreeMap<DailyKey, TrafficBytes> {
+    pub const fn totals(&self) -> &BTreeMap<DailyKey, TrafficBytes> {
         &self.totals
     }
-    pub fn hours(&self) -> &BTreeMap<HourlyKey, TrafficBytes> {
+    pub const fn hours(&self) -> &BTreeMap<HourlyKey, TrafficBytes> {
         &self.hours
     }
-    pub fn slices(&self) -> &BTreeMap<DailyKey, BTreeMap<u16, TrafficBytes>> {
+    pub const fn slices(&self) -> &BTreeMap<DailyKey, BTreeMap<u16, TrafficBytes>> {
         &self.slices
     }
     pub fn restore_slice(&mut self, key: DailyKey, slice: u16, bytes: TrafficBytes) {
@@ -371,13 +373,13 @@ impl TrafficAccounting {
         total.upload = total.upload.saturating_add(bytes.upload);
         total.download = total.download.saturating_add(bytes.download);
     }
-    pub fn rates(&self) -> &BTreeMap<TrafficGroup, TrafficRate> {
+    pub const fn rates(&self) -> &BTreeMap<TrafficGroup, TrafficRate> {
         &self.rates
     }
     pub fn clear_rates(&mut self) {
         self.rates.clear();
     }
-    pub fn has_baseline(&self) -> bool {
+    pub const fn has_baseline(&self) -> bool {
         self.initialized
     }
     pub fn reset_interval(&mut self) {

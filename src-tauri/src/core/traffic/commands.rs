@@ -2,6 +2,7 @@ use super::collector::{self as traffic, DailyTrafficPoint, TrafficDiagnosticView
 use crate::cmd::{CmdResult, StringifyErr as _};
 
 #[tauri::command]
+#[specta::specta]
 pub async fn export_traffic_csv(destination: String, content: String) -> CmdResult<()> {
     let path = std::path::Path::new(&destination);
     if !path.is_absolute()
@@ -16,21 +17,25 @@ pub async fn export_traffic_csv(destination: String, content: String) -> CmdResu
 }
 
 #[tauri::command]
+#[specta::specta]
 pub fn get_wsl_traffic_status() -> super::wsl::WslTrafficStatus {
     super::wsl::status()
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn clear_traffic_history(day: Option<String>) -> CmdResult<()> {
     traffic::clear_history(day).await.stringify_err()
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn backup_traffic_database(destination: String) -> CmdResult<()> {
     traffic::backup_database(destination).await.stringify_err()
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_storage_info(check_integrity: bool) -> CmdResult<super::database::StorageInfo> {
     tauri::async_runtime::spawn_blocking(move || traffic::storage_info(check_integrity))
         .await
@@ -39,11 +44,13 @@ pub async fn get_traffic_storage_info(check_integrity: bool) -> CmdResult<super:
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn compact_traffic_database() -> CmdResult<super::database::StorageInfo> {
     traffic::compact_database().await.stringify_err()
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_statistics(day: String, month: String) -> CmdResult<TrafficView> {
     tauri::async_runtime::spawn_blocking(move || traffic::snapshot(&day, &month))
         .await
@@ -52,6 +59,7 @@ pub async fn get_traffic_statistics(day: String, month: String) -> CmdResult<Tra
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_application_history(
     app: String,
     path: String,
@@ -64,6 +72,7 @@ pub async fn get_traffic_application_history(
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_application_series(
     app: String,
     path: String,
@@ -88,6 +97,7 @@ pub async fn get_traffic_application_series(
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_application_diagnostics(
     app: String,
     path: String,
@@ -103,6 +113,7 @@ pub async fn get_traffic_application_diagnostics(
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_app_icon(path: String, app: Option<String>) -> CmdResult<Option<String>> {
     tauri::async_runtime::spawn_blocking(move || {
         super::icon::application_icon(&path, app.as_deref().unwrap_or_default())
@@ -112,6 +123,7 @@ pub async fn get_traffic_app_icon(path: String, app: Option<String>) -> CmdResul
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_traffic_application_processes(
     app: String,
     path: String,

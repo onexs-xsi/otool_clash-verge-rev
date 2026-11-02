@@ -19,7 +19,7 @@ on:
         description: Portable edition number
         type: string
         required: true
-        default: '10'
+        default: '11'
 
 permissions:
   contents: read
@@ -40,7 +40,7 @@ jobs:
           run_install: false
       - uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version: '26.13.0'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm traffic:check
@@ -59,7 +59,7 @@ jobs:
           run_install: false
       - uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version: '26.13.0'
           cache: pnpm
       - uses: actions/cache@v6
         with:
@@ -71,6 +71,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm prebuild
       - run: pnpm web:build
+      - run: pnpm gen:contract --check
       - run: ./scripts/traffic/test-native.ps1
         shell: pwsh
       - run: pnpm traffic:test:package

@@ -2,9 +2,11 @@
 
 在原有 Clash Verge Rev 内提供“流量”页面，侧重经过 Clash 的应用流量与长期记录。主值、排序和筛选以代理流量为准，括号显示包含 Direct 的总量。
 
-## 使用 v10
+## 使用 v11
 
-免安装入口位于 `releases/archive/v10/clash-verge.exe`。先从系统托盘彻底退出旧版，再运行新版；移动时保留整个版本文件夹。设置、订阅和 v7–v9 SQLite 历史继续沿用，WSL 监测保持只读。
+免安装入口位于 `releases/archive/v11/clash-verge.exe`。先从系统托盘彻底退出旧版，再运行新版；移动时保留整个版本文件夹。设置、订阅和 v7–v10 SQLite 历史继续沿用，WSL 监测保持只读。
+
+v11 已合并主仓库 `dev` 截至 `ebd78ae9` 的更新，宿主版本为 2.5.10。流量接口接入主线的 Specta 类型生成与检查，既有记录及偏好继续沿用。
 
 数据库路径右侧的括号显示主数据库文件的实际大小；WAL 写入日志、可回收空间及在线备份位于“记录管理”。大小不通过扫描统计记录计算。
 
@@ -34,10 +36,10 @@ pnpm typecheck
 pnpm test
 ./scripts/traffic/test-native.ps1
 pnpm traffic:test:package
-pnpm portable --version 11
+pnpm portable --version 12
 ```
 
-`11` 是 v10 之后的示例，使用未发布过的递增编号。打包直接生成 `releases/archive/vN`，不占用 `current`，不覆盖或移动旧版文件。发布包附带文件校验清单；文案源为 `portable-notes.txt`。
+`12` 是 v11 之后的示例，使用未发布过的递增编号。打包直接生成 `releases/archive/vN`，不占用 `current`，不覆盖或移动旧版文件。发布包附带文件校验清单；文案源为 `portable-notes.txt`。
 
 高级选项 `--skip-build` 只整理已经构建完成的原生 release 文件，不证明二进制与当前源码或版本一致。正常发布使用完整构建命令。
 

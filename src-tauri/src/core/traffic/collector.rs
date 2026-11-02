@@ -101,7 +101,7 @@ fn is_false(value: &bool) -> bool {
     !value
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct TrafficRow {
     app: String,
@@ -119,7 +119,7 @@ pub(crate) struct TrafficRow {
     month_download: u64,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct TrafficView {
     connected: bool,
@@ -130,21 +130,21 @@ pub struct TrafficView {
     rows: Vec<TrafficRow>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, specta::Type)]
 pub struct DailyTrafficPoint {
     day: String,
     upload: u64,
     download: u64,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, specta::Type)]
 pub struct TrafficSeriesPoint {
     period: String,
     upload: u64,
     download: u64,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct TrafficDiagnosticView {
     chain: String,
@@ -718,14 +718,14 @@ fn samples_with_identities(
             {
                 app = source.file_name().unwrap_or_default().to_string_lossy().into_owned();
             }
-            if let Some((known_app, known_path)) = identities.get(item) {
-                if app.is_empty() || app.eq_ignore_ascii_case(&known_app) {
-                    if app.is_empty() {
-                        app = known_app;
-                    }
-                    if path.is_empty() {
-                        path = known_path;
-                    }
+            if let Some((known_app, known_path)) = identities.get(item)
+                && (app.is_empty() || app.eq_ignore_ascii_case(&known_app))
+            {
+                if app.is_empty() {
+                    app = known_app;
+                }
+                if path.is_empty() {
+                    path = known_path;
                 }
             }
             #[cfg(windows)]
@@ -857,39 +857,33 @@ pub(crate) fn start() {
                 }
             };
             let mut first_after_connect = true;
-            loop {
-                match stream.next_event(STREAM_TIMEOUT, || false).await {
-                    connections_stream::StreamConsumeState::Event(payload) => {
-                        let now = Instant::now();
-                        let local_time = Local::now();
-                        let elapsed = last_sample_at.map_or(1.0, |(instant, wall)| {
-                            now.duration_since(instant)
-                                .as_secs_f64()
-                                .max((local_time.timestamp_millis() - wall).max(0) as f64 / 1000.0)
-                        });
-                        last_sample_at = Some((now, local_time.timestamp_millis()));
-                        let day = local_time.format("%Y-%m-%d").to_string();
-                        let hour = local_time.format("%Y-%m-%dT%H").to_string();
-                        let minute =
-                            ((local_time.hour() * 3600 + local_time.minute() * 60 + local_time.second()) / 5) as u16;
-                        #[cfg(windows)]
-                        if !super::wsl::status().enabled {
-                            identities.forget_wsl();
-                        }
-                        let samples = samples_with_identities(&payload, &mut identities);
-                        {
-                            let mut state = STATE.lock();
-                            observe_sample(&mut state, &day, &hour, minute, &samples, elapsed, first_after_connect);
-                        }
-                        first_after_connect = false;
-                        if last_saved_at.elapsed() >= SAVE_INTERVAL {
-                            let _ = flush().await;
-                            last_saved_at = Instant::now();
-                        }
-                    }
-                    connections_stream::StreamConsumeState::Stale
-                    | connections_stream::StreamConsumeState::Closed
-                    | connections_stream::StreamConsumeState::ExitRequested => break,
+            while let connections_stream::StreamConsumeState::Event(payload) =
+                stream.next_event(STREAM_TIMEOUT, || false).await
+            {
+                let now = Instant::now();
+                let local_time = Local::now();
+                let elapsed = last_sample_at.map_or(1.0, |(instant, wall)| {
+                    now.duration_since(instant)
+                        .as_secs_f64()
+                        .max((local_time.timestamp_millis() - wall).max(0) as f64 / 1000.0)
+                });
+                last_sample_at = Some((now, local_time.timestamp_millis()));
+                let day = local_time.format("%Y-%m-%d").to_string();
+                let hour = local_time.format("%Y-%m-%dT%H").to_string();
+                let minute = ((local_time.hour() * 3600 + local_time.minute() * 60 + local_time.second()) / 5) as u16;
+                #[cfg(windows)]
+                if !super::wsl::status().enabled {
+                    identities.forget_wsl();
+                }
+                let samples = samples_with_identities(&payload, &mut identities);
+                {
+                    let mut state = STATE.lock();
+                    observe_sample(&mut state, &day, &hour, minute, &samples, elapsed, first_after_connect);
+                }
+                first_after_connect = false;
+                if last_saved_at.elapsed() >= SAVE_INTERVAL {
+                    let _ = flush().await;
+                    last_saved_at = Instant::now();
                 }
             }
             {

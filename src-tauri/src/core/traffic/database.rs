@@ -22,18 +22,18 @@ pub(super) enum ReadDetail {
 }
 
 impl ReadDetail {
-    pub(super) fn hours(self) -> bool {
+    pub(super) const fn hours(self) -> bool {
         matches!(self, Self::Hours | Self::Fine | Self::Resume)
     }
-    pub(super) fn slices(self) -> bool {
+    pub(super) const fn slices(self) -> bool {
         matches!(self, Self::Fine | Self::Resume)
     }
-    pub(super) fn diagnostics(self) -> bool {
+    pub(super) const fn diagnostics(self) -> bool {
         matches!(self, Self::Diagnostics | Self::Resume)
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct StorageInfo {
     pub path: String,
@@ -62,7 +62,7 @@ fn query_filter(column: &str, first: &str, last: &str, app: Option<&str>, path: 
 }
 
 fn sql_bytes(value: u64) -> Result<i64> {
-    Ok(i64::try_from(value).context("Traffic counter exceeds SQLite integer range")?)
+    i64::try_from(value).context("Traffic counter exceeds SQLite integer range")
 }
 fn read_bytes(row: &rusqlite::Row<'_>, index: usize) -> rusqlite::Result<u64> {
     let value: i64 = row.get(index)?;
@@ -122,7 +122,8 @@ impl Database {
         let mut pairs = Vec::new();
         for (app, path) in members {
             pairs.push(format!("(?{},?{})", values.len() + 1, values.len() + 2));
-            values.extend([app, path]);
+            values.push(app);
+            values.push(path);
         }
         filter.push_str(&format!(" AND (app,path) IN (VALUES {})", pairs.join(",")));
         Ok((filter, values))
@@ -375,11 +376,11 @@ impl Database {
         }
         if details.slices() {
             let selection = if details == ReadDetail::Resume {
-                format!(
+                std::borrow::Cow::Owned(format!(
                     "(day,app,path,chain,slot) IN (SELECT day,app,path,chain,MAX(slot) FROM slices WHERE {filter} GROUP BY day,app,path,chain)"
-                )
+                ))
             } else {
-                filter.clone()
+                std::borrow::Cow::Borrowed(filter.as_str())
             };
             let mut statement = self.connection.prepare(&format!(
                 "SELECT day,app,path,chain,slot,upload,download FROM slices WHERE {selection}"

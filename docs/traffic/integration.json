@@ -26,7 +26,6 @@
     "src-tauri/src/config/verge.rs": "Keep existing flat preferences and patch keys backward compatible.",
     "src-tauri/src/feat/effects.rs": "Classify traffic preference patches without OS/network effects.",
     "src-tauri/src/feat/window.rs": "Flush traffic storage during normal shutdown.",
-    "src-tauri/src/lib.rs": "Register the existing public Tauri command names.",
     "src-tauri/src/utils/connections_stream.rs": "Adapt the existing Mihomo connection stream for the collector.",
     "src-tauri/src/utils/mod.rs": "Share the stream adapter across supported platforms.",
     "src-tauri/src/utils/resolve/mod.rs": "Start the feature and skip upstream application replacement.",
@@ -35,7 +34,6 @@
     "src/pages/_navigation.tsx": "Register the traffic route.",
     "src/pages/_navigation-meta.ts": "Register navigation label/path.",
     "src/pages/_layout/hooks/use-nav-menu-order.ts": "Insert traffic after Connections for existing users.",
-    "src/types/global.d.ts": "Retain existing flat preference types.",
     "src/types/generated/i18n-keys.ts": "Generated translation keys.",
     "src/types/generated/i18n-resources.ts": "Generated translation resources.",
     "src/services/i18n.ts": "Register the dedicated traffic translation section.",
@@ -46,6 +44,11 @@
     "src/components/setting/mods/misc-viewer.tsx": "Hide the unsupported automatic-application-update setting.",
     "src/locales/*/layout.json": "Translate the added navigation item.",
     ".github/workflows/autobuild.yml": "Keep the official scheduled release pipeline scoped to its original repository.",
-    ".github/workflows/release.yml": "Keep the official release pipeline scoped to its original repository."
+    ".github/workflows/release.yml": "Keep the official release pipeline scoped to its original repository.",
+    "src-tauri/src/ipc.rs": "Register traffic commands in the upstream Specta command owner.",
+    "src/services/bindings.ts": "Generated upstream IPC bindings include traffic commands and preferences.",
+    "eslint.config.ts": "Allow the dedicated traffic command service to consume generated command implementations.",
+    "src/types/global.d.ts": "Describe the existing Mihomo process-recognition field used by the traffic page.",
+    ".github/workflows/prepare-release.yml": "Keep inherited official release-preparation automation scoped to its original repository."
   }
 }

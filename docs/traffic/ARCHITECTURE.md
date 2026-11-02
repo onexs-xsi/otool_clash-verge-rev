@@ -16,7 +16,7 @@ This fork adds application-level traffic history to Clash Verge Rev. The upstrea
 
 Host components use the feature's public exports. Native startup calls `traffic::start()`; shutdown calls `traffic::flush()`. Tauri commands are re-exported through the host's existing command registry. The existing command names and flat Verge preference keys are retained, so restructuring does not reset v7–v9 settings, pins or history.
 
-The public traffic RPC types are in `src/services/traffic/api.ts`. `historyBytes` adds the physical main SQLite file size to the statistics view. Reading this value uses file metadata outside the collector state lock; it does not count sample rows or scan the database on each refresh. WAL and reusable space remain available in Record management.
+Native traffic commands join the upstream Specta registry in `src-tauri/src/ipc.rs`; `pnpm gen:contract` produces the shared wire types and command implementations in `src/services/bindings.ts`. The feature service in `src/services/traffic/api.ts` owns traffic-facing adapters and narrows the established phase/reason strings without invoking Tauri directly. The host ESLint rule permits this dedicated service alongside `services/cmds` to consume generated commands. `historyBytes` adds the physical main SQLite file size to the statistics view. Reading this value uses file metadata outside the collector state lock; it does not count sample rows or scan the database on each refresh. WAL and reusable space remain available in Record management.
 
 ## Data and ownership constraints
 

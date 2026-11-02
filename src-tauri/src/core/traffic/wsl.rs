@@ -4,7 +4,7 @@ use parking_lot::Mutex;
 use serde::Serialize;
 use std::sync::LazyLock;
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct WslTrafficStatus {
     pub(crate) enabled: bool,
@@ -70,7 +70,9 @@ mod platform {
     use tokio::process::Command;
 
     const PROBE: &str = include_str!("wsl_traffic_probe.py");
-    const NAT_PROBE: &str = r#"$ErrorActionPreference = 'Stop'; $s = @(Get-NetNatSession | Select-Object Protocol,InternalSourceAddress,InternalSourcePort,InternalDestinationAddress,InternalDestinationPort,ExternalSourceAddress,ExternalSourcePort,ExternalDestinationAddress,ExternalDestinationPort); ConvertTo-Json -InputObject $s -Compress"#;
+    const NAT_PROBE: &str = r"$ErrorActionPreference = 'Stop'; $s = @(Get-NetNatSession | Select-Object Protocol,InternalSourceAddress,InternalSourcePort,InternalDestinationAddress,InternalDestinationPort,ExternalSourceAddress,ExternalSourcePort,ExternalDestinationAddress,ExternalDestinationPort); ConvertTo-Json -InputObject $s -Compress";
+
+    type ProbeSnapshot = (Vec<String>, String, Probe, Option<Vec<NatSession>>);
 
     #[derive(Clone, Deserialize)]
     struct Endpoint {
@@ -78,7 +80,7 @@ mod platform {
         port: u16,
     }
     impl Endpoint {
-        fn addr(&self) -> SocketAddr {
+        const fn addr(&self) -> SocketAddr {
             SocketAddr::new(self.ip, self.port)
         }
     }
@@ -157,7 +159,9 @@ mod platform {
 
     fn parse_distributions(bytes: &[u8]) -> Vec<String> {
         let words: Vec<_> = bytes
-            .chunks_exact(2)
+            .as_chunks::<2>()
+            .0
+            .iter()
             .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
             .collect();
         String::from_utf16_lossy(&words)
@@ -238,7 +242,7 @@ mod platform {
                 state.status.enabled = true;
             }
             let mut seen_distributions = Vec::new();
-            let result: Result<(Vec<String>, String, Probe, Option<Vec<NatSession>>), String> = async {
+            let result: Result<ProbeSnapshot, String> = async {
                 let distributions = running_distributions().await?;
                 seen_distributions.clone_from(&distributions);
                 let distro = wanted
@@ -308,8 +312,9 @@ mod platform {
             })
             .map(|socket| (socket.app.as_str(), socket.path.as_str()))
             .collect();
-        if matches.len() == 1 {
-            let (app, path) = matches.into_iter().next().unwrap();
+        if matches.len() == 1
+            && let Some((app, path)) = matches.into_iter().next()
+        {
             (format!("WSL:{distro}/{app}"), format!("wsl://{distro}{path}"))
         } else {
             (format!("WSL:{distro}/?"), format!("wsl://{distro}/?"))

@@ -1,5 +1,7 @@
 # Keeping the fork close to upstream
 
+v11 incorporates upstream `dev` commit `ebd78ae9ffb8c8e5632339bc65a2c9345b27a8f2` (2026-11-03), host version 2.5.10. Five textual merge conflicts were resolved in release workflow orchestration, dependency manifests/lockfile, command registration and configuration types; generated IPC ownership was preserved.
+
 The recorded baseline is `upstream.baseRevision` in `traffic.edition.json`. Upstream application versions and Traffic edition numbers are separate: importing a new host version must not rename or overwrite an existing portable edition.
 
 ## Review before merging
@@ -18,7 +20,7 @@ Commit the feature work on the fork before synchronizing. Create a sync branch, 
 
 Focus on these contracts during a merge:
 
-1. Tauri command registration, transport payloads and flat preference patches.
+1. The Specta command registry (`src-tauri/src/ipc.rs`), generated bindings, transport payloads and flat preference patches. Regenerate with `pnpm gen:contract` and verify with `pnpm gen:contract --check`.
 2. Mihomo connection-stream lifetime and startup/shutdown ordering.
 3. Navigation migration, feature locale loading and theme ownership.
 4. SQLite transaction/checkpoint behavior, five-second samples and interruption recovery.
@@ -42,11 +44,11 @@ On Windows, run the native feature tests with a Windows SDK installed:
 
 ```powershell
 ./scripts/traffic/test-native.ps1
-pnpm portable --version 11
+pnpm portable --version 12
 ```
 
 Use the next available edition number. The packager writes directly to `releases/archive/vN`, refuses to replace an existing edition and leaves a running old version's files alone. It uses the current checkout's upstream `package.json` version for host metadata and embeds the Traffic edition for the manual-update dialog.
 
 The full portable folder, including resources and cores, is the release unit. Source and documentation belong in Git; dependencies, local history, icon caches, temporary probes, binary archives and validation reports do not. Retain the upstream license and attribution.
 
-Use a fork release tag such as `traffic-v10`. The inherited official nightly and release entry jobs are restricted to the upstream repository; the Traffic edition workflow owns unsigned portable fork artifacts. Other inherited maintenance workflows remain available for deliberate manual use and may require their original configuration.
+Use a fork release tag such as `traffic-v11`. The inherited official nightly and release entry jobs are restricted to the upstream repository; the Traffic edition workflow owns unsigned portable fork artifacts. Other inherited maintenance workflows remain available for deliberate manual use and may require their original configuration.

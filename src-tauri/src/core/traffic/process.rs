@@ -38,14 +38,13 @@ pub(crate) fn application_identity(app: &str, path: &str) -> (String, String) {
             {
                 parts[index] = format!("{}__{}", fields[4], fields[0]);
             }
-        } else if index >= 3
+        } else if (index >= 3
             && parts[index - 3..index] == ["openai", "codex", "bin"]
             && parts.get(index + 1).is_some_and(|value| value == "codex.exe")
             && (7..=64).contains(&parts[index].len())
-            && parts[index].bytes().all(|byte| byte.is_ascii_hexdigit())
+            && parts[index].bytes().all(|byte| byte.is_ascii_hexdigit()))
+            || (parts[index - 1] == "application" && version(&parts[index]))
         {
-            parts[index] = "@version".into();
-        } else if parts[index - 1] == "application" && version(&parts[index]) {
             parts[index] = "@version".into();
         }
     }
@@ -73,7 +72,7 @@ fn traffic_application_identity_matches_frontend_fixtures() {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct ApplicationProcess {
     pub pid: u32,

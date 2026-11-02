@@ -184,7 +184,13 @@ fn manifest_application_id(manifest: &str, relative: &str) -> Option<String> {
 #[cfg(windows)]
 fn installed_package_icon_with_resources(path: &str, resources: bool) -> Option<String> {
     use std::ptr;
-    use windows_sys::Win32::{Foundation::ERROR_INSUFFICIENT_BUFFER, Storage::Packaging::Appx::*};
+    use windows_sys::Win32::{
+        Foundation::ERROR_INSUFFICIENT_BUFFER,
+        Storage::Packaging::Appx::{
+            ClosePackageInfo, GetPackageApplicationIds, GetPackagePathByFullName, GetPackagesByPackageFamily,
+            OpenPackageInfoByFullName,
+        },
+    };
     let (family, relative) = package_path_parts(path)?;
     let family: Vec<u16> = family.encode_utf16().chain(Some(0)).collect();
     unsafe {
@@ -228,10 +234,8 @@ fn installed_package_icon_with_resources(path: &str, resources: bool) -> Option<
                 if GetPackagePathByFullName(full.as_ptr(), &mut path_length, root.as_mut_ptr()) == 0 {
                     let end = root.iter().position(|ch| *ch == 0).unwrap_or(root.len());
                     let root = std::path::PathBuf::from(String::from_utf16_lossy(&root[..end]));
-                    if resources {
-                        if let Some(icon) = executable_icon_only(&root.join(&relative).to_string_lossy()) {
-                            return Some(icon);
-                        }
+                    if resources && let Some(icon) = executable_icon_only(&root.join(&relative).to_string_lossy()) {
+                        return Some(icon);
                     }
                     package_root = Some(root);
                 }
@@ -301,7 +305,10 @@ fn installed_package_icon_with_resources(path: &str, resources: bool) -> Option<
 fn window_icon(pids: &[u32]) -> Option<String> {
     use windows_sys::Win32::{
         Foundation::{HWND, LPARAM},
-        UI::WindowsAndMessaging::*,
+        UI::WindowsAndMessaging::{
+            CopyIcon, EnumWindows, GCLP_HICON, GetClassLongPtrW, GetWindowThreadProcessId, HICON, ICON_BIG, ICON_SMALL,
+            IsWindowVisible, SMTO_ABORTIFHUNG, SMTO_BLOCK, SMTO_ERRORONEXIT, SendMessageTimeoutW, WM_GETICON,
+        },
     };
     struct Windows<'a> {
         pids: &'a [u32],
@@ -604,7 +611,7 @@ fn icon_to_png(icon: windows_sys::Win32::UI::WindowsAndMessaging::HICON) -> Opti
         let drawn = DrawIconEx(dc, 0, 0, icon, 32, 32, 0, ptr::null_mut(), DI_NORMAL) != 0;
         let result = if drawn {
             let pixels = std::slice::from_raw_parts(bits.cast::<u8>(), 32 * 32 * 4).to_vec();
-            let mask = if pixels.chunks_exact(4).any(|pixel| pixel[3] != 0) {
+            let mask = if pixels.as_chunks::<4>().0.iter().any(|pixel| pixel[3] != 0) {
                 Some(None)
             } else if DrawIconEx(dc, 0, 0, icon, 32, 32, 0, ptr::null_mut(), DI_MASK) != 0 {
                 Some(Some(
@@ -635,7 +642,7 @@ fn icon_to_png(icon: windows_sys::Win32::UI::WindowsAndMessaging::HICON) -> Opti
 #[cfg(windows)]
 fn icon_rgba(pixels: &[u8], mask: Option<&[u8]>) -> Vec<u8> {
     let mut rgba = Vec::with_capacity(pixels.len());
-    for (index, pixel) in pixels.chunks_exact(4).enumerate() {
+    for (index, pixel) in pixels.as_chunks::<4>().0.iter().enumerate() {
         // The monochrome AND mask is white for transparent pixels and black for opaque pixels.
         let alpha = mask.map_or(pixel[3], |mask| if mask[index * 4] == 0 { 255 } else { 0 });
         rgba.extend_from_slice(&[pixel[2], pixel[1], pixel[0], alpha]);
