@@ -111,6 +111,7 @@ pub mod verge;
 pub mod webdav;
 
 // Re-export all command functions for backwards compatibility
+pub use crate::core::traffic::commands::*;
 pub use app::*;
 pub use backup::*;
 pub use clash::*;

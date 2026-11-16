@@ -32,6 +32,9 @@ overflow-checks = true
 lto = false
 rpath = false
 
+[profile.release.package.clash-verge]
+codegen-units = 32
+
 [profile.fast-release]
 inherits = "release"
 codegen-units = 64

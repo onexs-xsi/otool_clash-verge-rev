@@ -261,7 +261,7 @@ export default defineConfig([
     rules: ipcBoundaryRules(),
   },
   {
-    files: ['src/services/cmds.ts'],
+    files: ['src/services/cmds.ts', 'src/services/traffic/api.ts'],
     rules: ipcBoundaryRules({ allowCommands: true }),
   },
   {

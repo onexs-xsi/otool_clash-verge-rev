@@ -17,6 +17,7 @@ pub(crate) mod runtime_bundle;
 pub mod service;
 pub mod sysopt;
 pub mod timer;
+pub(crate) mod traffic;
 pub mod tray;
 pub mod updater;
 pub mod validate;

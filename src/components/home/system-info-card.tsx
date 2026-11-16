@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
+import { automaticApplicationUpdates } from '@/features/traffic/edition'
 import { useServiceInstaller } from '@/hooks/use-service-installer'
 import { useSystemState } from '@/hooks/use-system-state'
 import {
@@ -60,7 +61,7 @@ export const SystemInfoCard = () => {
   )
 
   useEffect(() => {
-    if (!verge?.auto_check_update) return
+    if (!automaticApplicationUpdates || !verge?.auto_check_update) return
     if (readLastCheckTime() !== null) return
 
     updateLastCheckTime()

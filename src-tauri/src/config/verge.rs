@@ -39,6 +39,28 @@ pub struct IVerge {
 
     pub traffic_graph: Option<bool>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(type = Option<Vec<std::string::String>>)]
+    pub traffic_pinned_apps: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(type = Option<Vec<std::string::String>>)]
+    pub traffic_visible_columns: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub traffic_group_by_application: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub traffic_hide_direct_only: Option<bool>,
+    pub traffic_recent_active_only: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_wsl_traffic_monitor: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[specta(type = Option<std::string::String>)]
+    pub wsl_monitor_distribution: Option<String>,
+
     /// show memory info (only for Mihomo)
     pub enable_memory_usage: Option<bool>,
 
@@ -443,6 +465,13 @@ impl IVerge {
         patch_opt_field!(self, patch, start_page);
         patch_opt_field!(self, patch, startup_script);
         patch_opt_field!(self, patch, traffic_graph);
+        patch_opt_field!(self, patch, traffic_pinned_apps);
+        patch_opt_field!(self, patch, traffic_visible_columns);
+        patch_opt_field!(self, patch, traffic_group_by_application);
+        patch_opt_field!(self, patch, traffic_hide_direct_only);
+        patch_opt_field!(self, patch, traffic_recent_active_only);
+        patch_opt_field!(self, patch, enable_wsl_traffic_monitor);
+        patch_opt_field!(self, patch, wsl_monitor_distribution);
         patch_opt_field!(self, patch, enable_memory_usage);
         patch_opt_field!(self, patch, enable_group_icon);
         patch_opt_field!(self, patch, pause_render_traffic_stats_on_blur);

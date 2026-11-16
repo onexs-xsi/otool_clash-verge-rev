@@ -90,6 +90,7 @@ async fn resolve_setup() {
         init_silent_updater(),
     );
 
+    crate::core::traffic::start();
     Handle::refresh_clash();
     refresh_tray_menu().await;
     resolve_done();
@@ -153,6 +154,9 @@ async fn init_auto_backup() {
 }
 
 async fn init_silent_updater() {
+    if !crate::core::traffic::edition::automatic_application_updates() {
+        return;
+    }
     use crate::core::SilentUpdater;
     use crate::core::handle::Handle;
 

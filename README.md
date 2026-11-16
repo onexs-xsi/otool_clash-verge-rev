@@ -1,3 +1,20 @@
+# Clash Verge Rev · Traffic
+
+基于 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) 的流量增强分支，保留上游许可与归属。
+
+- 按应用记录代理流量、链路和长期历史，含 Direct 的全部流量另以括号显示。
+- SQLite 持续记录，支持 5 秒明细、平滑图表、筛选排序、置顶、近期活跃、导出及数据库管理。
+- 增强 Windows 应用与图标识别，WSL 使用只读监测，不修改其网络或代理配置。
+- 完整免安装目录发布，应用采用手动更新；上游内核更新继续可用。
+
+[使用与构建](docs/traffic/README.md) · [模块与数据约束](docs/traffic/ARCHITECTURE.md) · [同步主线](docs/traffic/UPSTREAM.md)
+
+仓库地址在 fork 后填写 `traffic.edition.json`；保留上游应用版本，流量增强版本单独编号。构建文件、个人记录与本地缓存不提交到源码仓库。
+
+---
+
+以下保留上游项目说明：
+
 <h1 align="center">
   <img src="./src-tauri/icons/icon.png" alt="Clash" width="128" />
   <br>

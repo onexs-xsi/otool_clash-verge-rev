@@ -199,6 +199,9 @@ pub async fn clean_async() -> CleanupResult {
     )
     .await;
     result.stop_error = stop_error.into_inner();
+    if let Err(error) = crate::core::traffic::flush().await {
+        logging!(warn, Type::Window, "Could not save traffic history: {error:#}");
+    }
 
     logging!(
         info,

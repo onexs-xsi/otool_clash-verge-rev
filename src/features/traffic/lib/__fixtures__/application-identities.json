@@ -1,0 +1,83 @@
+[
+  {
+    "app": "codex.exe",
+    "path": "C:\\Users\\tester\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe",
+    "identity": [
+      "codex.exe",
+      "c:\\users\\tester\\appdata\\local\\openai\\codex\\bin\\@version\\codex.exe"
+    ]
+  },
+  {
+    "app": "CODEX.EXE",
+    "path": "C:\\Users\\tester\\AppData\\Local\\OpenAI\\Codex\\bin\\22cfb1d302613eae\\codex.exe",
+    "identity": [
+      "codex.exe",
+      "c:\\users\\tester\\appdata\\local\\openai\\codex\\bin\\@version\\codex.exe"
+    ]
+  },
+  {
+    "app": "ChatGPT.exe",
+    "path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.1023.6621.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe",
+    "identity": [
+      "chatgpt.exe",
+      "c:\\program files\\windowsapps\\openai.codex__2p2nqsd0c76g0\\app\\chatgpt.exe"
+    ]
+  },
+  {
+    "app": "ChatGPT.exe",
+    "path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.1027.3384.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe",
+    "identity": [
+      "chatgpt.exe",
+      "c:\\program files\\windowsapps\\openai.codex__2p2nqsd0c76g0\\app\\chatgpt.exe"
+    ]
+  },
+  {
+    "app": "ChatGPT.exe",
+    "path": "C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.1027.3384.0_x64__otherpublisher\\app\\ChatGPT.exe",
+    "identity": [
+      "chatgpt.exe",
+      "c:\\program files\\windowsapps\\openai.codex__otherpublisher\\app\\chatgpt.exe"
+    ]
+  },
+  {
+    "app": "codex.exe",
+    "path": "D:\\Other\\Codex\\bin\\22cfb1d302613eae\\codex.exe",
+    "identity": [
+      "codex.exe",
+      "d:\\other\\codex\\bin\\22cfb1d302613eae\\codex.exe"
+    ]
+  },
+  {
+    "app": "msedgewebview2.exe",
+    "path": "C:\\Edge\\Application\\143.0.1.2\\msedgewebview2.exe",
+    "identity": [
+      "msedgewebview2.exe",
+      "c:\\edge\\application\\@version\\msedgewebview2.exe"
+    ]
+  },
+  {
+    "app": "WSL:Ubuntu/Curl",
+    "path": "/usr/bin/Curl",
+    "identity": ["WSL:Ubuntu/Curl", "/usr/bin/Curl"]
+  },
+  {
+    "app": "App.exe",
+    "path": "\\\\?\\C:\\Apps\\App.exe",
+    "identity": ["app.exe", "c:\\apps\\app.exe"]
+  },
+  {
+    "app": "App.exe",
+    "path": "C:/Apps/App.exe",
+    "identity": ["app.exe", "c:\\apps\\app.exe"]
+  },
+  {
+    "app": "App.exe",
+    "path": "\\??\\C:\\Apps\\App.exe",
+    "identity": ["app.exe", "c:\\apps\\app.exe"]
+  },
+  {
+    "app": "curl",
+    "path": "/usr/bin/curl",
+    "identity": ["curl", "/usr/bin/curl"]
+  }
+]

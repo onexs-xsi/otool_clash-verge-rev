@@ -5,6 +5,7 @@ import {
 } from '@tauri-apps/plugin-updater'
 import { compareVersions as compareSemver } from 'compare-versions'
 
+import { automaticApplicationUpdates } from '@/features/traffic/edition'
 import { version as appVersion } from '@root/package.json'
 
 const normalizeVersion = (input: string | null | undefined): string | null => {
@@ -28,6 +29,7 @@ const localVersionNormalized = normalizeVersion(appVersion)
 export const checkUpdateSafe = async (
   options?: CheckOptions,
 ): Promise<Update | null> => {
+  if (!automaticApplicationUpdates) return null
   const result = await check(options ?? {})
   if (!result) return null
 

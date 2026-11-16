@@ -39,6 +39,64 @@ export const commands = {
   /**  Returns one coherent core/service snapshot instead of independently refreshed state. */
   getRuntimeState: () =>
     __TAURI_INVOKE<RunStateView_Serialize>('get_runtime_state'),
+  exportTrafficCsv: (destination: string, content: string) =>
+    __TAURI_INVOKE<null>('export_traffic_csv', { destination, content }),
+  getWslTrafficStatus: () =>
+    __TAURI_INVOKE<WslTrafficStatus_Serialize>('get_wsl_traffic_status'),
+  clearTrafficHistory: (day: string | null) =>
+    __TAURI_INVOKE<null>('clear_traffic_history', { day }),
+  backupTrafficDatabase: (destination: string) =>
+    __TAURI_INVOKE<null>('backup_traffic_database', { destination }),
+  getTrafficStorageInfo: (checkIntegrity: boolean) =>
+    __TAURI_INVOKE<StorageInfo_Serialize>('get_traffic_storage_info', {
+      checkIntegrity,
+    }),
+  compactTrafficDatabase: () =>
+    __TAURI_INVOKE<StorageInfo_Serialize>('compact_traffic_database'),
+  getTrafficStatistics: (day: string, month: string) =>
+    __TAURI_INVOKE<TrafficView_Serialize>('get_traffic_statistics', {
+      day,
+      month,
+    }),
+  getTrafficApplicationHistory: (app: string, path: string, month: string) =>
+    __TAURI_INVOKE<DailyTrafficPoint[]>('get_traffic_application_history', {
+      app,
+      path,
+      month,
+    }),
+  getTrafficApplicationSeries: (
+    app: string,
+    path: string,
+    day: string,
+    days: number,
+    chains: string[] | null,
+    proxyOnly: boolean | null,
+  ) =>
+    __TAURI_INVOKE<TrafficSeriesPoint[]>('get_traffic_application_series', {
+      app,
+      path,
+      day,
+      days,
+      chains,
+      proxyOnly,
+    }),
+  getTrafficApplicationDiagnostics: (
+    app: string,
+    path: string,
+    day: string,
+    chains: string[] | null,
+  ) =>
+    __TAURI_INVOKE<TrafficDiagnosticView_Serialize[]>(
+      'get_traffic_application_diagnostics',
+      { app, path, day, chains },
+    ),
+  getTrafficAppIcon: (path: string, app: string | null) =>
+    __TAURI_INVOKE<string | null>('get_traffic_app_icon', { path, app }),
+  getTrafficApplicationProcesses: (app: string, path: string) =>
+    __TAURI_INVOKE<ApplicationProcess[]>('get_traffic_application_processes', {
+      app,
+      path,
+    }),
   getPendingFailures: () =>
     __TAURI_INVOKE<PendingFailure[]>('get_pending_failures'),
   getSidecarFailure: () =>
@@ -187,6 +245,15 @@ export const commands = {
 }
 
 /* Types */
+export type ApplicationProcess = {
+  pid: number
+  parentPid: number
+  name: string
+  path: string
+  parentName: string
+  matchSource: string
+}
+
 export type AutoProxy = {
   enable: boolean
   url: string
@@ -251,9 +318,49 @@ export type CoreUpgradeReport = {
   upgraded: boolean
 }
 
+export type DailyTrafficPoint = {
+  day: string
+  upload: number
+  download: number
+}
+
 export type DelayHistory = {
   time: string
   delay: number
+}
+
+export type DiagnosticRecord =
+  | DiagnosticRecord_Serialize
+  | DiagnosticRecord_Deserialize
+
+export type DiagnosticRecord_Deserialize = {
+  destination: string
+  network: string
+  reason: string
+  source: string
+  lastSeen: string
+  upload: number
+  download: number
+  connectionId?: string
+  inboundType?: string
+  lookupLocal?: string | null
+  lookupRemote?: string | null
+  process?: ApplicationProcess | null
+}
+
+export type DiagnosticRecord_Serialize = {
+  destination: string
+  network: string
+  reason: string
+  source: string
+  lastSeen: string
+  upload: number
+  download: number
+  connectionId: string
+  inboundType: string
+  lookupLocal: string | null
+  lookupRemote: string | null
+  process: ApplicationProcess | null
 }
 
 export type DnsOverrideOutcome =
@@ -381,6 +488,13 @@ export type IVerge_Deserialize = {
   start_page?: string | null
   startup_script?: string | null
   traffic_graph?: boolean | null
+  traffic_pinned_apps?: string[] | null
+  traffic_visible_columns?: string[] | null
+  traffic_group_by_application?: boolean | null
+  traffic_hide_direct_only?: boolean | null
+  traffic_recent_active_only?: boolean | null
+  enable_wsl_traffic_monitor?: boolean | null
+  wsl_monitor_distribution?: string | null
   /**  show memory info (only for Mihomo) */
   enable_memory_usage?: boolean | null
   enable_group_icon?: boolean | null
@@ -471,6 +585,13 @@ export type IVerge_Serialize = {
   start_page: string | null
   startup_script: string | null
   traffic_graph: boolean | null
+  traffic_pinned_apps?: string[]
+  traffic_visible_columns?: string[]
+  traffic_group_by_application?: boolean
+  traffic_hide_direct_only?: boolean
+  traffic_recent_active_only: boolean | null
+  enable_wsl_traffic_monitor?: boolean
+  wsl_monitor_distribution?: string
   /**  show memory info (only for Mihomo) */
   enable_memory_usage: boolean | null
   enable_group_icon?: boolean
@@ -1062,6 +1183,36 @@ export type SidecarFailureSnapshot_Serialize = {
   detail: string | null
 }
 
+export type StorageInfo = StorageInfo_Serialize | StorageInfo_Deserialize
+
+export type StorageInfo_Deserialize = {
+  path: string
+  databaseBytes: number
+  walBytes: number
+  reusableBytes: number
+  dailyRows: number
+  sampleRows: number
+  recordedDays: number
+  firstDay?: string | null
+  lastDay?: string | null
+  lastSavedAt?: number | null
+  integrity?: string | null
+}
+
+export type StorageInfo_Serialize = {
+  path: string
+  databaseBytes: number
+  walBytes: number
+  reusableBytes: number
+  dailyRows: number
+  sampleRows: number
+  recordedDays: number
+  firstDay: string | null
+  lastDay: string | null
+  lastSavedAt: number | null
+  integrity: string | null
+}
+
 export type SystemInfo = {
   system_name: string
   system_version: string
@@ -1076,6 +1227,82 @@ export type SystemProxy = {
 export type ToggleableProxyPort = {
   enabled: boolean
   port: number
+}
+
+export type TrafficDiagnosticView =
+  | TrafficDiagnosticView_Serialize
+  | TrafficDiagnosticView_Deserialize
+
+export type TrafficDiagnosticView_Deserialize = {
+  chain: string
+  connectionActive?: boolean | null
+  liveProcess?: ApplicationProcess | null
+} & DiagnosticRecord_Deserialize
+
+export type TrafficDiagnosticView_Serialize = {
+  chain: string
+  connectionActive: boolean | null
+  liveProcess: ApplicationProcess | null
+} & DiagnosticRecord_Serialize
+
+export type TrafficRow = TrafficRow_Serialize | TrafficRow_Deserialize
+
+export type TrafficRow_Deserialize = {
+  app: string
+  path: string
+  chain: string
+  active: boolean
+  lastActivityAt?: number | null
+  dayDurationMs?: number | null
+  durationIncomplete: boolean
+  uploadRate: number | null
+  downloadRate: number | null
+  dayUpload: number
+  dayDownload: number
+  monthUpload: number
+  monthDownload: number
+}
+
+export type TrafficRow_Serialize = {
+  app: string
+  path: string
+  chain: string
+  active: boolean
+  lastActivityAt: number | null
+  dayDurationMs: number | null
+  durationIncomplete: boolean
+  uploadRate: number | null
+  downloadRate: number | null
+  dayUpload: number
+  dayDownload: number
+  monthUpload: number
+  monthDownload: number
+}
+
+export type TrafficSeriesPoint = {
+  period: string
+  upload: number
+  download: number
+}
+
+export type TrafficView = TrafficView_Serialize | TrafficView_Deserialize
+
+export type TrafficView_Deserialize = {
+  connected: boolean
+  loaded: boolean
+  historyError?: string | null
+  historyPath?: string | null
+  historyBytes?: number | null
+  rows: TrafficRow_Deserialize[]
+}
+
+export type TrafficView_Serialize = {
+  connected: boolean
+  loaded: boolean
+  historyError: string | null
+  historyPath: string | null
+  historyBytes: number | null
+  rows: TrafficRow_Serialize[]
 }
 
 export type UnlockItem = UnlockItem_Serialize | UnlockItem_Deserialize
@@ -1148,6 +1375,30 @@ export type VergeEventPayloads_Serialize = {
 export type WebDavFile = {
   href: string
   last_modified: string
+}
+
+export type WslTrafficStatus =
+  | WslTrafficStatus_Serialize
+  | WslTrafficStatus_Deserialize
+
+export type WslTrafficStatus_Deserialize = {
+  enabled: boolean
+  phase: string
+  distributions: string[]
+  distro?: string | null
+  directDetectionAvailable: boolean
+  natMappingAvailable: boolean
+  error?: string | null
+}
+
+export type WslTrafficStatus_Serialize = {
+  enabled: boolean
+  phase: string
+  distributions: string[]
+  distro: string | null
+  directDetectionAvailable: boolean
+  natMappingAvailable: boolean
+  error: string | null
 }
 
 export type YamlMapping = { [key in string]: JsonValue }

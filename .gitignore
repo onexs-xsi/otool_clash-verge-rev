@@ -17,3 +17,9 @@ target
 .vfox
 .claude
 .zed
+
+# Local portable releases and verification output
+/releases/*
+!/releases/README.md
+/Clash-Verge-Traffic*/
+/premium-audit.json

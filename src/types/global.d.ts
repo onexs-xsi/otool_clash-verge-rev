@@ -22,6 +22,7 @@ interface IConfigData {
   'socket-port': number
   'allow-lan': boolean
   'log-level': string
+  'find-process-mode'?: string
   'mixed-port': number
   'redir-port': number
   'socks-port': number

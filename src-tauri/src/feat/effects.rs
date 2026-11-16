@@ -56,6 +56,13 @@ verge_registry! {
     start_page => NoEffect;
     startup_script => NoEffect;
     traffic_graph => NoEffect;
+    traffic_pinned_apps => NoEffect;
+    traffic_visible_columns => NoEffect;
+    traffic_group_by_application => NoEffect;
+    traffic_hide_direct_only => NoEffect;
+    traffic_recent_active_only => NoEffect;
+    enable_wsl_traffic_monitor => NoEffect;
+    wsl_monitor_distribution => NoEffect;
     enable_memory_usage => NoEffect;
     enable_group_icon => NoEffect;
     pause_render_traffic_stats_on_blur => NoEffect;
