@@ -7,12 +7,23 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { lazy, type Ref, Suspense, useImperativeHandle, useState } from 'react'
+import {
+  lazy,
+  type Ref,
+  Suspense,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, type DialogRef } from '@/components/base'
 import { useUpdate } from '@/hooks/use-update'
 import { showNotice } from '@/services/notice-service'
+import {
+  getPortableUpdateResult,
+  type PortableUpdateResult,
+} from '@/services/traffic/portable-update'
 import { openExternalUrl } from '@/utils/open-external-url'
 import { version } from '@root/package.json'
 
@@ -22,11 +33,15 @@ import {
   trafficUpstreamVersion,
 } from '../edition'
 
+import { PortableUpdateAction } from './portable-update-action'
+
 const LazyReactMarkdown = lazy(() => import('react-markdown'))
 
 export function TrafficUpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
+  const [lastReplacement, setLastReplacement] =
+    useState<PortableUpdateResult | null>(null)
   const releasesUrl = trafficReleasesUrl
   const { updateInfo, loading, error, refetch } = useUpdate({
     enabled: open,
@@ -40,11 +55,23 @@ export function TrafficUpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
     open: () => setOpen(true),
     close: () => setOpen(false),
   }))
+  useEffect(() => {
+    if (!open) return
+    let active = true
+    void getPortableUpdateResult()
+      .then((result) => {
+        if (active) setLastReplacement(result)
+      })
+      .catch(showNotice.error)
+    return () => {
+      active = false
+    }
+  }, [open])
   return (
     <BaseDialog
       open={open}
       title={t('traffic.manualUpdates')}
-      contentSx={{ width: 520, maxWidth: 'calc(100vw - 56px)' }}
+      contentSx={{ width: 520, maxWidth: '100%' }}
       disableCancel
       okBtn={t('traffic.close')}
       onClose={() => setOpen(false)}
@@ -60,6 +87,13 @@ export function TrafficUpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
         {t('traffic.upstreamVersion', { version: trafficUpstreamVersion })}
       </Typography>
       <Box aria-live="polite" sx={{ mb: 2 }}>
+        {lastReplacement?.status === 'error' && (
+          <Alert severity="error" sx={{ mb: 1, overflowWrap: 'anywhere' }}>
+            {t('traffic.lastReplacementFailed')}
+            <br />
+            {lastReplacement.detail}
+          </Alert>
+        )}
         {loading || (updateInfo === undefined && !error) ? (
           <Stack spacing={1}>
             <Typography variant="body2">
@@ -139,12 +173,15 @@ export function TrafficUpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
           {t('traffic.checkUpdates')}
         </Button>
         {!error && !loading && release?.available && (
-          <Button
-            variant="contained"
-            onClick={() => openUrl(release.downloadUrl)}
-          >
-            {t('traffic.downloadPortable')}
-          </Button>
+          <>
+            <Button
+              variant="outlined"
+              onClick={() => openUrl(release.downloadUrl)}
+            >
+              {t('traffic.downloadPortable')}
+            </Button>
+            <PortableUpdateAction version={release.version} />
+          </>
         )}
         {releasesUrl && (
           <Button onClick={() => openUrl(release?.url ?? releasesUrl)}>

@@ -19,7 +19,7 @@ on:
         description: Portable edition number
         type: string
         required: true
-        default: '13'
+        default: '14'
 
 permissions:
   contents: read
@@ -73,6 +73,8 @@ jobs:
       - run: pnpm web:build
       - run: pnpm gen:contract --check
       - run: ./scripts/traffic/test-native.ps1
+        shell: pwsh
+      - run: ./scripts/traffic/test-portable-update.ps1
         shell: pwsh
       - run: pnpm traffic:test:package
       - name: Build portable archive

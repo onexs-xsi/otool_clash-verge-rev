@@ -3,6 +3,37 @@ use crate::cmd::{CmdResult, StringifyErr as _};
 
 #[tauri::command]
 #[specta::specta]
+pub async fn prepare_portable_update(
+    version: String,
+    on_event: tauri::ipc::Channel<super::update::PortableUpdateProgress>,
+) -> CmdResult<Option<super::update::PortableUpdatePlan>> {
+    super::update::prepare(version, |event| {
+        let _ = on_event.send(event);
+    })
+    .await
+    .stringify_err()
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn cancel_portable_update() {
+    super::update::cancel().await;
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn install_portable_update(id: String, app: tauri::AppHandle) -> CmdResult<()> {
+    super::update::install(&id, app).await.stringify_err()
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn get_portable_update_result() -> CmdResult<Option<super::update::PortableUpdateResult>> {
+    super::update::last_result().stringify_err()
+}
+
+#[tauri::command]
+#[specta::specta]
 pub async fn export_traffic_csv(destination: String, content: String) -> CmdResult<()> {
     let path = std::path::Path::new(&destination);
     if !path.is_absolute()

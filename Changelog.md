@@ -21,6 +21,12 @@
        scripts-workflow/group_platforms.sh regroups, --check verifies
      HTML comments are stripped by the update dialog's sanitizer and hidden on
      GitHub, so they never reach users. -->
+## v2.6.0-otool.14
+
+**🪟 Windows**
+
+- 新增「直接替换安装」：下载校验后确认程序路径，按需授权并自动替换重启。
+
 ## v2.6.0-otool.13
 
 **🪟 Windows**

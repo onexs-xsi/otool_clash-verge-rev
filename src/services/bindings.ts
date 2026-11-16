@@ -39,6 +39,19 @@ export const commands = {
   /**  Returns one coherent core/service snapshot instead of independently refreshed state. */
   getRuntimeState: () =>
     __TAURI_INVOKE<RunStateView_Serialize>('get_runtime_state'),
+  preparePortableUpdate: (
+    version: string,
+    onEvent: Channel<PortableUpdateProgress>,
+  ) =>
+    __TAURI_INVOKE<PortableUpdatePlan | null>('prepare_portable_update', {
+      version,
+      onEvent,
+    }),
+  cancelPortableUpdate: () => __TAURI_INVOKE<void>('cancel_portable_update'),
+  installPortableUpdate: (id: string) =>
+    __TAURI_INVOKE<null>('install_portable_update', { id }),
+  getPortableUpdateResult: () =>
+    __TAURI_INVOKE<PortableUpdateResult | null>('get_portable_update_result'),
   exportTrafficCsv: (destination: string, content: string) =>
     __TAURI_INVOKE<null>('export_traffic_csv', { destination, content }),
   getWslTrafficStatus: () =>
@@ -801,6 +814,29 @@ export type PlatformVergeFields_Serialize = {
   verge_tproxy_port?: number | null
   verge_tproxy_enabled?: boolean | null
   enable_tray_speed?: boolean | null
+}
+
+export type PortableUpdatePlan = {
+  id: string
+  version: string
+  currentExecutable: string
+  sourceExecutable: string
+  downloadUrl: string
+  backupDirectory: string
+  packageSha256: string
+}
+
+export type PortableUpdateProgress = {
+  stage: string
+  downloaded: number
+  total: number
+}
+
+export type PortableUpdateResult = {
+  status: string
+  version: string
+  detail: string
+  backupDirectory: string
 }
 
 export type PrfExtra = {

@@ -46,7 +46,7 @@
     "src/services/update.ts": "Prevent the JavaScript updater from fetching upstream app packages.",
     "src/hooks/use-update.ts": "Share fork release checks, automatic-check preferences and successful-check timestamps.",
     "src/components/home/system-info-card.tsx": "Open the fork release dialog from the home update entry.",
-    "src/components/base/base-dialog.tsx": "Keep the service authorization actions visible and disabled while the operation is pending.",
+    "src/components/base/base-dialog.tsx": "Keep pending authorization actions visible and disabled, and initially focus Cancel in the replacement confirmation.",
     "src/components/layout/service-migration-dialog.tsx": "Guide startup service authorization and verify service-mode recovery before reporting success.",
     "src/components/layout/service-migration-dialog.test.ts": "Reproduce startup authorization, cancellation and incomplete service recovery.",
     "src/components/setting/mods/update-viewer.tsx": "Route fork update entries to the portable release dialog.",
@@ -60,6 +60,7 @@
     "src/services/bindings.ts": "Generated upstream IPC bindings include traffic commands and preferences.",
     "eslint.config.ts": "Allow the traffic command service to consume generated commands and validate feature-owned Node packaging scripts.",
     "src/types/global.d.ts": "Describe the existing Mihomo process-recognition field used by the traffic page.",
-    ".github/workflows/prepare-release.yml": "Keep inherited official release-preparation automation scoped to its original repository."
+    ".github/workflows/prepare-release.yml": "Keep inherited official release-preparation automation scoped to its original repository.",
+    "src-tauri/src/utils/network.rs": "Reuse the shared system-proxy and TLS policy for streamed portable-update downloads."
   }
 }

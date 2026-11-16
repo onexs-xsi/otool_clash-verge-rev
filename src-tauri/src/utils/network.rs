@@ -360,4 +360,20 @@ impl NetworkManager {
         })
         .await
     }
+
+    #[cfg(target_os = "windows")]
+    pub async fn get_response(&self, url: &str, timeout_secs: u64) -> Result<reqwest::Response> {
+        Self::request_with_static_webpki_fallback(true, |tls_root_mode| async move {
+            let client = self
+                .create_request_with_tls_mode(ProxyType::System, Some(timeout_secs), None, false, tls_root_mode)
+                .await?;
+            client
+                .get(url)
+                .send()
+                .await
+                .and_then(reqwest::Response::error_for_status)
+                .map_err(|error| Self::context_reqwest_error(error, "Update download failed"))
+        })
+        .await
+    }
 }

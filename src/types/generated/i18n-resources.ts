@@ -1653,6 +1653,7 @@ export interface TranslationResources {
       collapseDetails: string
       collecting: string
       columnsHint: string
+      confirmReplace: string
       connectionEnded: string
       connectionError: string
       connectionLive: string
@@ -1704,6 +1705,7 @@ export interface TranslationResources {
       includeDirect: string
       internalApp: string
       internalAppNote: string
+      lastReplacementFailed: string
       lastSeen: string
       legacyCompact: string
       legacyHour: string
@@ -1732,6 +1734,8 @@ export interface TranslationResources {
       ownerGithub: string
       pathUnavailable: string
       pin: string
+      prepareUpdateNote: string
+      prepareUpdateTitle: string
       processExactPath: string
       processHint: string
       processInfo: string
@@ -1770,7 +1774,18 @@ export interface TranslationResources {
       recoverySummary: string
       recoveryTitle: string
       releaseNotes: string
+      replaceBackupPath: string
+      replaceConfirmNote: string
+      replaceConfirmTitle: string
+      replaceCurrentPath: string
+      replaceDownloadSource: string
+      replaceInstall: string
+      replacementFailed: string
+      replacementStarting: string
+      replacePermissionNote: string
+      replaceSourcePath: string
       resetChains: string
+      retryUpdate: string
       rowsPerPage: string
       sampledProcess: string
       samplingNote: string
@@ -1804,7 +1819,11 @@ export interface TranslationResources {
       unpin: string
       unpinnedRowsPerPage: string
       updateAvailable: string
+      updateCancelling: string
       updateCheckFailed: string
+      updateDownloading: string
+      updateExtracting: string
+      updateVerifying: string
       upload: string
       uploadRate: string
       upstreamVersion: string
