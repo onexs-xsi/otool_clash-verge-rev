@@ -30,6 +30,10 @@ try {
         & $testExe installed_package_recovers_its_icon --ignored --test-threads=1
         if ($LASTEXITCODE -ne 0) { throw 'Installed package icon test failed.' }
     }
+    if ($env:TRAFFIC_UPDATE_TEST_ARCHIVE) {
+        & $testExe published_portable_archive_passes_native_validation --ignored --test-threads=1
+        if ($LASTEXITCODE -ne 0) { throw 'The published portable archive failed native update validation.' }
+    }
 } finally {
     Pop-Location
 }

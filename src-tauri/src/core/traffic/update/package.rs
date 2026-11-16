@@ -386,6 +386,19 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "requires the final portable ZIP in TRAFFIC_UPDATE_TEST_ARCHIVE"]
+    fn published_portable_archive_passes_native_validation() {
+        let archive = std::env::var_os("TRAFFIC_UPDATE_TEST_ARCHIVE").expect("Set the final ZIP path");
+        let fixture = Fixture::new();
+        extract_package(
+            Path::new(&archive),
+            &fixture.0.join("package"),
+            env!("CARGO_PKG_VERSION"),
+        )
+        .unwrap();
+    }
+
+    #[test]
     fn altered_or_incomplete_packages_never_reach_confirmation() {
         for variant in 0..6 {
             let fixture = Fixture::new();
