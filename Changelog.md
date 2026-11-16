@@ -21,6 +21,12 @@
        scripts-workflow/group_platforms.sh regroups, --check verifies
      HTML comments are stripped by the update dialog's sanitizer and hidden on
      GitHub, so they never reach users. -->
+## v2.6.0-otool.12
+
+- 新增本仓库版本检查、更新说明与完整便携包下载。
+- 新增设置页个人 GitHub 入口，头像离线可见。
+- 优化版本显示，统一使用上游版本号与 OTool 增强版编号。
+
 ## v2.6.0
 
 - **Mihomo 内核升级至 v1.19.34**

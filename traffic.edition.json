@@ -1,8 +1,10 @@
 {
-  "displayName": "Clash Verge Rev · Traffic",
+  "displayName": "OTool Clash Verge Rev · Traffic",
+  "edition": 12,
   "repository": "https://github.com/onexs-xsi/otool_clash-verge-rev",
   "automaticApplicationUpdates": false,
   "upstream": {
+    "version": "2.6.0",
     "repository": "https://github.com/clash-verge-rev/clash-verge-rev",
     "baseRevision": "d7ac6b5bca2e92117893dcc31ad635dd87ad8ee6"
   }

@@ -12,7 +12,6 @@ import { forwardRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
-import { automaticApplicationUpdates } from '@/features/traffic/edition'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
 
@@ -203,23 +202,21 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
           />
         </ListItem>
 
-        {automaticApplicationUpdates && (
-          <ListItem
-            data-setting-target="settings.modals.misc.fields.autoCheckUpdate"
-            sx={{ padding: '5px 2px' }}
-          >
-            <ListItemText
-              primary={t('settings.modals.misc.fields.autoCheckUpdate')}
-            />
-            <Switch
-              edge="end"
-              checked={values.autoCheckUpdate}
-              onChange={(_, c) =>
-                setValues((v) => ({ ...v, autoCheckUpdate: c }))
-              }
-            />
-          </ListItem>
-        )}
+        <ListItem
+          data-setting-target="settings.modals.misc.fields.autoCheckUpdate"
+          sx={{ padding: '5px 2px' }}
+        >
+          <ListItemText
+            primary={t('settings.modals.misc.fields.autoCheckUpdate')}
+          />
+          <Switch
+            edge="end"
+            checked={values.autoCheckUpdate}
+            onChange={(_, c) =>
+              setValues((v) => ({ ...v, autoCheckUpdate: c }))
+            }
+          />
+        </ListItem>
 
         <ListItem
           data-setting-target="settings.modals.misc.fields.enableBuiltinEnhanced"

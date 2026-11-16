@@ -5,7 +5,12 @@ Clash Verge Rev {{APP_VERSION}} - 流量页面版 {{TRAFFIC_VERSION}}（Windows 
 2. 程序、内核和 resources 必须保留在同一文件夹；移动时请移动整个文件夹。
 3. 本版本沿用当前 Windows 用户的 Clash Verge 设置和订阅。沿用 v7–v10 的 SQLite 流量数据库，不清空历史，不导入旧 JSON。
 
-v11 调整
+v12 调整
+- 版本统一为上游版本号加 OTool 增强版编号，例如 2.6.0-otool.12；上游基线为 2.6.0 dev，提交 d7ac6b5b。
+- 应用检查更新指向 onexs-xsi/otool_clash-verge-rev，可查看更新说明和下载完整便携包；自动检查可在设置中关闭，整包仍按上述方式切换。
+- 设置页新增 onexs-xsi GitHub 头像，图片随程序内置，离线也可显示。
+
+v11 保留调整
 - 合并主仓库 dev，截至 f149604e（2026-11-03），宿主版本 2.5.10。
 - 流量命令与配置接入主线的生成式类型接口，保留五秒采样、历史、应用识别和只读 WSL 监测。
 

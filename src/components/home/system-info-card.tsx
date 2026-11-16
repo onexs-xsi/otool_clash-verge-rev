@@ -8,11 +8,15 @@ import {
 } from '@mui/icons-material'
 import { Typography, Stack, Divider, Chip, IconButton } from '@mui/material'
 import { useLockFn } from 'ahooks'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
-import { automaticApplicationUpdates } from '@/features/traffic/edition'
+import { type DialogRef } from '@/components/base'
+import {
+  automaticApplicationUpdates,
+  TrafficUpdateViewer,
+} from '@/features/traffic'
 import { useServiceInstaller } from '@/hooks/use-service-installer'
 import { useSystemState } from '@/hooks/use-system-state'
 import {
@@ -48,7 +52,8 @@ export const SystemInfoCard = () => {
     useSystemState()
   const { installServiceAndRestartCore } = useServiceInstaller()
 
-  const { checkUpdate: triggerCheckUpdate, lastCheckUpdate } = useUpdate(true)
+  const updateRef = useRef<DialogRef>(null)
+  const { checkUpdate: triggerCheckUpdate, lastCheckUpdate } = useUpdate()
 
   const { data: osInfo = '' } = useQuery({
     queryKey: ['getSystemInfo'],
@@ -92,6 +97,10 @@ export const SystemInfoCard = () => {
   }, [isSidecarMode, installServiceAndRestartCore, mutateSystemState])
 
   const onCheckUpdate = useLockFn(async () => {
+    if (!automaticApplicationUpdates) {
+      updateRef.current?.open()
+      return
+    }
     try {
       const result = await triggerCheckUpdate()
       const info = result.data
@@ -209,6 +218,9 @@ export const SystemInfoCard = () => {
       }
     >
       <Stack spacing={1.5}>
+        {!automaticApplicationUpdates && (
+          <TrafficUpdateViewer ref={updateRef} />
+        )}
         <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
           <Typography variant="body2" color="text.secondary">
             {t('home.components.systemInfo.fields.osInfo')}

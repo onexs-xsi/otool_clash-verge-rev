@@ -1,5 +1,6 @@
 import { automaticApplicationUpdates } from '@/features/traffic/edition'
 import { fetchCacheData, setCacheData, useQuery } from '@/services/query-client'
+import { checkTrafficUpdate } from '@/services/traffic/releases'
 import { checkUpdateSafe } from '@/services/update'
 
 import { useVerge } from './use-verge'
@@ -20,28 +21,35 @@ export const updateLastCheckTime = (timestamp?: number): number => {
   return now
 }
 
-export const useUpdate = (enabled: boolean = true) => {
+export const useUpdate = ({ enabled = true, automatic = true } = {}) => {
   const { verge } = useVerge()
   const { auto_check_update } = verge || {}
 
-  const shouldCheck =
-    enabled && automaticApplicationUpdates && auto_check_update !== false
+  const shouldCheck = enabled && (!automatic || auto_check_update !== false)
 
   const fetchUpdate = async () => {
-    const result = await checkUpdateSafe()
+    const result = automaticApplicationUpdates
+      ? await checkUpdateSafe()
+      : await checkTrafficUpdate()
     updateLastCheckTime()
     return result
   }
 
-  const { data: updateInfo, isFetching: isValidating } = useQuery({
+  const {
+    data: updateInfo,
+    isFetching: isValidating,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['checkUpdate'],
     queryFn: fetchUpdate,
     enabled: shouldCheck,
     retry: 2,
     staleTime: 60 * 60 * 1000,
-    refetchInterval: 24 * 60 * 60 * 1000,
+    refetchInterval: automatic ? 24 * 60 * 60 * 1000 : false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
+    refetchOnReconnect: automatic,
   })
 
   const checkUpdate = async () => {
@@ -60,6 +68,8 @@ export const useUpdate = (enabled: boolean = true) => {
     updateInfo,
     checkUpdate,
     loading: isValidating,
+    error,
+    refetch,
     lastCheckUpdate: lastCheckUpdate ?? null,
   }
 }

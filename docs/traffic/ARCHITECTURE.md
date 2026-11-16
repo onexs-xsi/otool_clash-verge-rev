@@ -33,9 +33,11 @@ Native traffic commands join the upstream Specta registry in `src-tauri/src/ipc.
 
 The current edition deliberately retains the host identifier, AppData directory and service integration to preserve existing users' profiles and SQLite records. This is not an isolated side-by-side installation of the official client. A future identifier change requires an explicit migration and service-ownership design.
 
-Application updates use complete portable folders. The JavaScript checker, native manual checker, cached startup installer and background checker obey the edition policy. Portable builds also apply an updater overlay with no upstream application endpoint. Mihomo core updates remain owned by the host and continue to work.
+Application updates use complete portable folders. `services/traffic/releases.ts` owns the public GitHub release transport and version comparison. `useUpdate` shares the release query, successful-check timestamp and automatic-check preference across home, settings and the layout notification. The portable dialog checks on demand even when automatic checks are disabled, distinguishes empty/error/current/new states and opens the matching full-folder download. Only published OTool tags with uploaded Windows x64 packages in the configured repository are eligible, including prereleases. Mihomo core updates remain owned by the host and continue to work.
 
-The inherited updater public key is not a signing key for this fork. Automated fork updates require a dedicated release feed, signing configuration and validation before changing this policy. Put the real fork URL in `traffic.edition.json` after creating the repository; CI can supply `VITE_TRAFFIC_REPOSITORY` when building its artifacts.
+The native manual checker, cached startup installer and background installer remain disabled by the edition policy. The application configuration has no upstream installer endpoints or signing key. Automatic replacement requires a dedicated signing and installation design before changing this policy. The fork repository, upstream base version and numeric edition live in `traffic.edition.json`; application manifests use `upstreamVersion-otool.edition`. Packaging validates their agreement. CI can supply `VITE_TRAFFIC_REPOSITORY` when building artifacts.
+
+The settings owner link uses the public onexs-xsi avatar checked into the feature assets and imported with Vite's `?inline` mode. The image becomes a data URL embedded in the compiled frontend and executable; rendering it never requests GitHub. Only activating the link opens the fork repository.
 
 ## Continuous verification
 

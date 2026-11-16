@@ -198,5 +198,17 @@
   "storageFileSizeHint": "SQLite 主数据库文件大小；写入日志等其他占用可在“记录管理”中查看。",
   "manualUpdates": "版本与更新",
   "manualUpdatesNote": "本分支使用完整免安装版本更新。请先从托盘退出旧版，再切换完整版本文件夹；设置和流量数据库继续保存在 AppData。内核更新照常可用。",
-  "openReleases": "查看发布版本"
+  "openReleases": "查看发布版本",
+  "ownerGithub": "OTool GitHub · onexs-xsi",
+  "currentVersion": "当前版本：{{version}}",
+  "upstreamVersion": "基于 Clash Verge Rev {{version}} dev",
+  "checkingUpdates": "正在检查发布版本…",
+  "updateCheckFailed": "未能检查版本。请检查网络后重试，或打开发布页面。",
+  "updateAvailable": "发现新版本：{{version}}",
+  "upToDate": "当前已是最新版本。",
+  "releaseNotes": "更新说明",
+  "noReleaseNotes": "此版本未提供更新说明。",
+  "noPublishedRelease": "仓库暂未发布可用的 Windows 便携版本。",
+  "checkUpdates": "检查更新",
+  "downloadPortable": "下载完整便携包"
 }

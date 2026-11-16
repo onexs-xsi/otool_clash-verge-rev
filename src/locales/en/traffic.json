@@ -198,5 +198,17 @@
   "storageFileSizeHint": "Size of the main SQLite file. Write-ahead logs and other storage are shown in Record management.",
   "manualUpdates": "Version and updates",
   "manualUpdatesNote": "This edition is updated with a complete portable folder. Exit the previous version from the system tray before switching. Your settings and traffic database stay in AppData. Core updates remain available.",
-  "openReleases": "Open releases"
+  "openReleases": "Open releases",
+  "ownerGithub": "OTool GitHub · onexs-xsi",
+  "currentVersion": "Current version: {{version}}",
+  "upstreamVersion": "Based on Clash Verge Rev {{version}} dev",
+  "checkingUpdates": "Checking releases…",
+  "updateCheckFailed": "Could not check releases. Check your connection and try again, or open the releases page.",
+  "updateAvailable": "New version available: {{version}}",
+  "upToDate": "You are up to date.",
+  "releaseNotes": "Release notes",
+  "noReleaseNotes": "No release notes were provided.",
+  "noPublishedRelease": "No Windows portable release has been published yet.",
+  "checkUpdates": "Check for updates",
+  "downloadPortable": "Download portable package"
 }

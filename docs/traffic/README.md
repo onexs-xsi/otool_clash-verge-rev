@@ -2,11 +2,11 @@
 
 在原有 Clash Verge Rev 内提供“流量”页面，侧重经过 Clash 的应用流量与长期记录。主值、排序和筛选以代理流量为准，括号显示包含 Direct 的总量。
 
-## 使用 v11
+## 使用 v12（2.6.0-otool.12）
 
-免安装入口位于 `releases/archive/v11/clash-verge.exe`。先从系统托盘彻底退出旧版，再运行新版；移动时保留整个版本文件夹。设置、订阅和 v7–v10 SQLite 历史继续沿用，WSL 监测保持只读。
+从 [本仓库 Releases](https://github.com/onexs-xsi/otool_clash-verge-rev/releases) 下载 Windows x64 完整便携包并解压。入口为 `clash-verge.exe`，本地构建入口为 `releases/archive/v12/clash-verge.exe`。先从系统托盘彻底退出旧版，再运行新版；移动时保留整个版本文件夹。设置、订阅和既有 SQLite 历史继续沿用，WSL 监测保持只读。
 
-v11 已合并主仓库 `dev` 截至 `f149604e` 的更新，宿主版本为 2.5.10。流量接口接入主线的 Specta 类型生成与检查，既有记录及偏好继续沿用。
+v12 已合并主仓库 `dev` 截至 `d7ac6b5b` 的更新，上游版本为 2.6.0 dev。设置、首页和更新提示共用本仓库的发布检查；「自动检查更新」可在设置中关闭，手动检查仍可使用。设置页新增内置的 onexs-xsi GitHub 头像，离线也可显示。
 
 数据库路径右侧的括号显示主数据库文件的实际大小；WAL 写入日志、可回收空间及在线备份位于“记录管理”。大小不通过扫描统计记录计算。
 
@@ -39,14 +39,14 @@ pnpm traffic:test:package
 pnpm portable --version 12
 ```
 
-`12` 是 v11 之后的示例，使用未发布过的递增编号。打包直接生成 `releases/archive/vN`，不占用 `current`，不覆盖或移动旧版文件。发布包附带文件校验清单；文案源为 `portable-notes.txt`。
+`12` 是当前增强版编号。后续编号必须大于已有归档，并同步修改 `traffic.edition.json` 的 `edition` 和 `upstream.version`，以及 `package.json`、`src-tauri/tauri.conf.json`、`src-tauri/Cargo.toml`、`Cargo.lock` 的应用版本为 `上游版本-otool.编号`。打包脚本会拒绝版本不一致的发布。输出为 `releases/archive/vN`，不覆盖或移动旧版文件；`release.json` 记录版本、标签和文件校验值。
 
 高级选项 `--skip-build` 只整理已经构建完成的原生 release 文件，不证明二进制与当前源码或版本一致。正常发布使用完整构建命令。
 
-## 准备公开 fork
+## 发布与更新
 
-仓库名建议 `clash-verge-rev-with-traffic`。创建 fork 后，在 `traffic.edition.json` 填写真实仓库地址；目前不硬编码账号。GitHub 的 Traffic edition 工作流可以手动生成 Windows 免安装制品，实际云端执行需要在新仓库中验证。
+`traffic.edition.json` 配置本仓库身份和上游基线，CI 可通过 `VITE_TRAFFIC_REPOSITORY` 指定构建仓库。Release 标签格式为 `v2.6.0-otool.12`，完整便携包名称为 `otool_clash-verge-rev_2.6.0_traffic-v12_windows-x64_portable.zip`。检查器读取发布列表，包含已发布的预发布版，仅提供本仓库内已上传完整 Windows x64 便携包的匹配版本；草稿、上游标签和不完整包不参与更新比较。
 
 当前版本继续共享上游应用标识、AppData 和服务，便于现有用户延续记录；它不是与官方客户端隔离并行运行的安装。若以后更换标识，应单独设计数据和服务迁移。
 
-整包应用更新采用手动切换免安装目录，避免上游安装包覆盖增强功能。内核更新仍由原有流程负责；启用分支自己的自动整包更新之前，需要独立的发布源、签名和验证。
+检测到新版后可在程序中查看更新说明，并在浏览器下载完整包。整包应用更新采用手动切换免安装目录；内核更新仍由原有流程负责。程序不嵌入 GitHub 凭据。将来若支持自动替换程序，需要另行配置本分支的签名和安装流程。

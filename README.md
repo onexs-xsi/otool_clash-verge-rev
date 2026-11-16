@@ -1,15 +1,15 @@
-# Clash Verge Rev · Traffic
+# OTool Clash Verge Rev · Traffic
 
 基于 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev) 的流量增强分支，保留上游许可与归属。
 
 - 按应用记录代理流量、链路和长期历史，含 Direct 的全部流量另以括号显示。
 - SQLite 持续记录，支持 5 秒明细、平滑图表、筛选排序、置顶、近期活跃、导出及数据库管理。
 - 增强 Windows 应用与图标识别，WSL 使用只读监测，不修改其网络或代理配置。
-- 完整免安装目录发布，应用采用手动更新；上游内核更新继续可用。
+- 自动检查本仓库的新版本，支持查看更新说明和下载完整免安装包；上游内核更新继续可用。
 
 [使用与构建](docs/traffic/README.md) · [模块与数据约束](docs/traffic/ARCHITECTURE.md) · [同步主线](docs/traffic/UPSTREAM.md)
 
-仓库地址在 fork 后填写 `traffic.edition.json`；保留上游应用版本，流量增强版本单独编号。构建文件、个人记录与本地缓存不提交到源码仓库。
+版本格式为「上游版本号-otool.增强版编号」，例如 `2.6.0-otool.12`；当前基于上游 `2.6.0 dev`。发布与更新源为 [本仓库 Releases](https://github.com/onexs-xsi/otool_clash-verge-rev/releases)。构建文件、个人记录与本地缓存不提交到源码仓库。
 
 ![流量监测页面预览（模拟数据）](docs/traffic/traffic-monitor-preview.png)
 

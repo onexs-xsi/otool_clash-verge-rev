@@ -1,5 +1,4 @@
 import { alpha, Box, Button, LinearProgress } from '@mui/material'
-import type { Update } from '@tauri-apps/plugin-updater'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
 import { lazy, Suspense, useImperativeHandle, useMemo, useState } from 'react'
@@ -7,6 +6,10 @@ import { useTranslation } from 'react-i18next'
 import type { Options as ReactMarkdownOptions } from 'react-markdown'
 
 import { BaseDialog, DialogRef } from '@/components/base'
+import {
+  automaticApplicationUpdates,
+  TrafficUpdateViewer,
+} from '@/features/traffic'
 import { useUpdate } from '@/hooks/use-update'
 import type { DownloadEvent } from '@/services/bindings'
 import {
@@ -167,7 +170,15 @@ const remarkGitHubAlerts = (labels: Record<GitHubAlertType, string>) => {
   return visit
 }
 
-export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
+export function UpdateViewer(props: { ref?: Ref<DialogRef> }) {
+  return automaticApplicationUpdates ? (
+    <NativeUpdateViewer {...props} />
+  ) : (
+    <TrafficUpdateViewer {...props} />
+  )
+}
+
+function NativeUpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
   const { t, i18n } = useTranslation()
 
   const [open, setOpen] = useState(false)
@@ -175,7 +186,8 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
   const setUpdateState = useSetUpdateState()
 
   const { updateInfo: detectedUpdate, checkUpdate } = useUpdate()
-  const [refreshedUpdate, setRefreshedUpdate] = useState<Update | null>()
+  const [refreshedUpdate, setRefreshedUpdate] =
+    useState<typeof detectedUpdate>()
   const updateInfo =
     refreshedUpdate === undefined ? detectedUpdate : refreshedUpdate
 

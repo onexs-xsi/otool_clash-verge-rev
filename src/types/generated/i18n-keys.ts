@@ -1157,6 +1157,18 @@ export const translationKeys = [
   'traffic.manualUpdates',
   'traffic.manualUpdatesNote',
   'traffic.openReleases',
+  'traffic.ownerGithub',
+  'traffic.currentVersion',
+  'traffic.upstreamVersion',
+  'traffic.checkingUpdates',
+  'traffic.updateCheckFailed',
+  'traffic.updateAvailable',
+  'traffic.upToDate',
+  'traffic.releaseNotes',
+  'traffic.noReleaseNotes',
+  'traffic.noPublishedRelease',
+  'traffic.checkUpdates',
+  'traffic.downloadPortable',
 ] as const
 
 export type TranslationKey = (typeof translationKeys)[number]

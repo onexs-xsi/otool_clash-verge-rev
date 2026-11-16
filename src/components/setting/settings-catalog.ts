@@ -1,4 +1,3 @@
-import { automaticApplicationUpdates } from '@/features/traffic/edition'
 import type { TranslationKey } from '@/types/generated/i18n-keys'
 
 export interface SettingEntry {
@@ -481,9 +480,7 @@ const settingsCatalog: readonly SettingEntry[] = [
     'settings.modals.misc.fields.appLogMaxCount': 'app log max count',
     'settings.modals.misc.fields.autoCloseConnections':
       'auto close connections',
-    ...(automaticApplicationUpdates
-      ? { 'settings.modals.misc.fields.autoCheckUpdate': 'auto check update' }
-      : {}),
+    'settings.modals.misc.fields.autoCheckUpdate': 'auto check update',
     'settings.modals.misc.fields.enableBuiltinEnhanced':
       'enable builtin enhanced',
     'settings.modals.misc.fields.proxyLayoutColumns': 'proxy layout columns',

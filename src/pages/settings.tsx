@@ -10,6 +10,7 @@ import SettingVergeAdvanced from '@/components/setting/setting-verge-advanced'
 import SettingVergeBasic from '@/components/setting/setting-verge-basic'
 import { SettingsSearch } from '@/components/setting/settings-search'
 import { WslMonitorControl } from '@/features/traffic'
+import { OwnerGithubButton } from '@/features/traffic/components/owner-github-button'
 import { showNotice } from '@/services/notice-service'
 import { useThemeMode } from '@/services/states'
 import { openExternalUrl } from '@/utils/open-external-url'
@@ -84,6 +85,7 @@ const SettingPage = () => {
                 >
                   <GitHub fontSize="inherit" />
                 </IconButton>
+                <OwnerGithubButton />
               </ButtonGroup>
             </Box>
           }

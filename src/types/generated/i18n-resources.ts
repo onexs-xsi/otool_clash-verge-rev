@@ -1637,6 +1637,8 @@ export interface TranslationResources {
       chartStale: string
       chartTitle: string
       chartTotal: string
+      checkingUpdates: string
+      checkUpdates: string
       chooseColumns: string
       clear: string
       clearAll: string
@@ -1656,6 +1658,7 @@ export interface TranslationResources {
       copyDiagnostics: string
       currentDownload: string
       currentUpload: string
+      currentVersion: string
       day: string
       dayDownload: string
       daySum: string
@@ -1671,6 +1674,7 @@ export interface TranslationResources {
       diagnosticsWsl: string
       disconnected: string
       download: string
+      downloadPortable: string
       downloadRate: string
       duration: string
       durationHint: string
@@ -1718,10 +1722,13 @@ export interface TranslationResources {
       nonLinearCompact: string
       nonLinearNote: string
       noProxyResults: string
+      noPublishedRelease: string
       noRecord: string
+      noReleaseNotes: string
       noResults: string
       openReleases: string
       otherApps: string
+      ownerGithub: string
       pathUnavailable: string
       pin: string
       processExactPath: string
@@ -1761,6 +1768,7 @@ export interface TranslationResources {
       recoveryNote: string
       recoverySummary: string
       recoveryTitle: string
+      releaseNotes: string
       resetChains: string
       rowsPerPage: string
       sampledProcess: string
@@ -1794,8 +1802,12 @@ export interface TranslationResources {
       unknownOutboundNote: string
       unpin: string
       unpinnedRowsPerPage: string
+      updateAvailable: string
+      updateCheckFailed: string
       upload: string
       uploadRate: string
+      upstreamVersion: string
+      upToDate: string
       viewAllChart: string
       wslAutomatic: string
       wslDescription: string

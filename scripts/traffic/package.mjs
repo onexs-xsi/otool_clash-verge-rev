@@ -1,5 +1,5 @@
-import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
@@ -19,6 +19,32 @@ if (!/^[1-9]\d*$/.test(values.version ?? '')) {
 }
 
 const edition = `v${values.version}`
+const editionConfig = JSON.parse(
+  fs.readFileSync(path.join(root, 'traffic.edition.json'), 'utf8'),
+)
+const { version: appVersion } = JSON.parse(
+  fs.readFileSync(path.join(root, 'package.json'), 'utf8'),
+)
+const expectedVersion = `${editionConfig.upstream.version}-otool.${editionConfig.edition}`
+const tauriVersion = JSON.parse(
+  fs.readFileSync(path.join(root, 'src-tauri/tauri.conf.json'), 'utf8'),
+).version
+const cargoVersion = fs
+  .readFileSync(path.join(root, 'src-tauri/Cargo.toml'), 'utf8')
+  .match(/^version = "([^"]+)"/m)?.[1]
+const lockedVersion = fs
+  .readFileSync(path.join(root, 'Cargo.lock'), 'utf8')
+  .match(/name = "clash-verge"\r?\nversion = "([^"]+)"/)?.[1]
+if (
+  Number(values.version) !== editionConfig.edition ||
+  [appVersion, tauriVersion, cargoVersion, lockedVersion].some(
+    (version) => version !== expectedVersion,
+  )
+) {
+  throw new Error(
+    `Synchronize the edition, package.json, Tauri and Cargo versions to ${expectedVersion} before packaging.`,
+  )
+}
 const releases = path.join(root, 'releases')
 const archive = path.join(releases, 'archive')
 const destination = path.join(archive, edition)
@@ -51,7 +77,7 @@ if (!values['skip-build']) {
     {
       cwd: root,
       stdio: 'inherit',
-      env: { ...process.env, VITE_TRAFFIC_EDITION: edition },
+      env: process.env,
     },
   )
 }
@@ -69,10 +95,10 @@ if (
   throw new Error('The release application is not Windows x64.')
 }
 
-const { version: appVersion } = JSON.parse(
-  fs.readFileSync(path.join(root, 'package.json'), 'utf8'),
-)
 const staging = fs.mkdtempSync(path.join(root, 'target', 'portable-'))
+if (path.dirname(staging) !== path.join(root, 'target')) {
+  throw new Error('Refusing to clean a directory outside the build workspace.')
+}
 try {
   fs.writeFileSync(path.join(staging, 'clash-verge.exe'), appBytes)
   for (const core of ['verge-mihomo', 'verge-mihomo-alpha']) {
@@ -119,7 +145,7 @@ try {
   hashFiles(staging)
   fs.writeFileSync(
     path.join(staging, 'release.json'),
-    `${JSON.stringify({ edition, appVersion, platform: 'windows-x64', packagedAt: new Date().toISOString(), sha256: hashes }, null, 2)}\n`,
+    `${JSON.stringify({ edition, appVersion, upstreamVersion: editionConfig.upstream.version, releaseTag: `v${appVersion}`, platform: 'windows-x64', packagedAt: new Date().toISOString(), sha256: hashes }, null, 2)}\n`,
   )
 
   fs.mkdirSync(archive, { recursive: true })
@@ -133,10 +159,5 @@ try {
     `Portable ${edition}: ${path.join(destination, 'clash-verge.exe')}`,
   )
 } finally {
-  if (path.dirname(staging) !== path.join(root, 'target')) {
-    throw new Error(
-      'Refusing to clean a directory outside the build workspace.',
-    )
-  }
   fs.rmSync(staging, { recursive: true, force: true })
 }

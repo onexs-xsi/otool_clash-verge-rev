@@ -26,10 +26,28 @@ test('portable packaging keeps versioned archives and rejects overwrites or inco
       fileURLToPath(new URL('./package.mjs', import.meta.url)),
       path.join(directory, 'scripts/traffic/package.mjs'),
     )
-    fs.writeFileSync(
-      path.join(directory, 'package.json'),
-      JSON.stringify({ version: '2.5.8' }),
-    )
+    const setVersion = (edition) => {
+      const version = `2.6.0-otool.${edition}`
+      fs.writeFileSync(
+        path.join(directory, 'traffic.edition.json'),
+        JSON.stringify({ edition, upstream: { version: '2.6.0' } }),
+      )
+      for (const name of ['package.json', 'src-tauri/tauri.conf.json']) {
+        fs.writeFileSync(
+          path.join(directory, name),
+          JSON.stringify({ version }),
+        )
+      }
+      fs.writeFileSync(
+        path.join(directory, 'src-tauri/Cargo.toml'),
+        `[package]\nname = "clash-verge"\nversion = "${version}"\n`,
+      )
+      fs.writeFileSync(
+        path.join(directory, 'Cargo.lock'),
+        `[[package]]\nname = "clash-verge"\nversion = "${version}"\n`,
+      )
+    }
+    setVersion(1)
     const exe = Buffer.alloc(256)
     exe.write('MZ')
     exe.writeUInt32LE(0x80, 0x3c)
@@ -72,6 +90,7 @@ test('portable packaging keeps versioned archives and rejects overwrites or inco
     const original = fs.readFileSync(
       path.join(directory, 'releases/archive/v1/release.json'),
     )
+    setVersion(2)
     assert.equal(run(2).status, 0)
     assert.equal(run(2).status, 1)
     assert.deepEqual(
@@ -83,8 +102,19 @@ test('portable packaging keeps versioned archives and rejects overwrites or inco
         path.join(directory, 'releases/archive/v2/使用说明.txt'),
         'utf8',
       ),
-      '2.5.8 v2',
+      '2.6.0-otool.2 v2',
     )
+    const manifest = JSON.parse(original.toString())
+    assert.equal(manifest.releaseTag, 'v2.6.0-otool.1')
+    assert.equal(manifest.upstreamVersion, '2.6.0')
+    setVersion(3)
+    fs.writeFileSync(
+      path.join(directory, 'src-tauri/tauri.conf.json'),
+      JSON.stringify({ version: '2.6.0' }),
+    )
+    assert.notEqual(run(3).status, 0)
+    assert.ok(!fs.existsSync(path.join(directory, 'releases/archive/v3')))
+    setVersion(3)
     fs.unlinkSync(path.join(directory, 'docs/traffic/portable-notes.txt'))
     assert.notEqual(run(3).status, 0)
     assert.ok(!fs.existsSync(path.join(directory, 'releases/archive/v3')))
