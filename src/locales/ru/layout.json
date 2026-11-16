@@ -27,6 +27,7 @@
       "title": "Service update required",
       "message": "The Clash Verge service version does not match the version required by this app. Choose Reinstall Service to uninstall the existing service and install the required version, or continue with Sidecar for this session.",
       "checkingMessage": "Checking the system service status and current running mode. Please wait…",
+      "updatingMessage": "Updating the system service and restarting the core. Windows may ask for administrator authorization. If you cancel, you can try again.",
       "unavailableMessage": "The required Clash Verge service is not available. Install or repair it, or continue with Sidecar for this session.",
       "reinstall": "Reinstall service",
       "repair": "Repair service",

@@ -645,8 +645,6 @@ impl CoreManager {
             self.rollback_failed_start().await;
             #[cfg(target_os = "macos")]
             crate::utils::resolve::dns::sync_public_dns().await;
-            #[cfg(target_os = "windows")]
-            self.try_sidecar_after_service_unavailable().await?;
             return Ok(());
         }
         if Handle::global().is_exiting() {
@@ -694,33 +692,6 @@ impl CoreManager {
         }
 
         result
-    }
-
-    #[cfg(target_os = "windows")]
-    async fn try_sidecar_after_service_unavailable(&self) -> Result<()> {
-        use crate::core::runstate::{RUN_STATE, ServiceHealth};
-
-        let state = RUN_STATE.state();
-        if state.pending.is_some() || state.op_in_flight || Handle::global().is_exiting() {
-            return Ok(());
-        }
-        let reason = match state.health {
-            ServiceHealth::Unavailable(reason) => reason,
-            ServiceHealth::VersionMismatch => "registered service is unavailable or incompatible".to_owned(),
-            _ => return Ok(()),
-        };
-        if let Err(error) = clash_verge_service_ipc::execution::check_sidecar_available()
-            .await
-            .map_err(super::state::explain_core_occupancy)
-        {
-            logging!(
-                warn,
-                Type::Core,
-                "Service unavailable ({reason}); Sidecar fallback withheld: {error:#}"
-            );
-            return Ok(());
-        }
-        self.start_sidecar_after_service_failure(anyhow::anyhow!(reason)).await
     }
 
     #[cfg(target_os = "windows")]

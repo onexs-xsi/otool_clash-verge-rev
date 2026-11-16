@@ -37,6 +37,8 @@ Application updates use complete portable folders. `services/traffic/releases.ts
 
 The native manual checker, cached startup installer and background installer remain disabled by the edition policy. The application configuration has no upstream installer endpoints or signing key. Automatic replacement requires a dedicated signing and installation design before changing this policy. The fork repository, upstream base version and numeric edition live in `traffic.edition.json`; application manifests use `upstreamVersion-otool.edition`. Packaging validates their agreement. CI can supply `VITE_TRAFFIC_REPOSITORY` when building artifacts.
 
+System-service migration is independent of application replacement. Startup checks retain incompatible or unavailable registered services as a pending user decision. The shared migration dialog authorizes the bundled elevated installer, or explicitly permits user mode for the current session. A service update is reported as complete only after a fresh snapshot confirms a usable service and a core in Service mode.
+
 The settings owner link uses the public onexs-xsi avatar checked into the feature assets and imported with Vite's `?inline` mode. The image becomes a data URL embedded in the compiled frontend and executable; rendering it never requests GitHub. Only activating the link opens the fork repository.
 
 ## Continuous verification

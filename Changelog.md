@@ -21,6 +21,12 @@
        scripts-workflow/group_platforms.sh regroups, --check verifies
      HTML comments are stripped by the update dialog's sanitizer and hidden on
      GitHub, so they never reach users. -->
+## v2.6.0-otool.13
+
+**🪟 Windows**
+
+- 修复系统服务迁移：启动时提示授权更新，内核恢复服务模式后再提示成功。
+
 ## v2.6.0-otool.12
 
 - 新增本仓库版本检查、更新说明与完整便携包下载。

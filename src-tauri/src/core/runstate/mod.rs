@@ -336,6 +336,9 @@ impl<E: RunStateEnv> RunStateStore<E> {
         if self.operation_running.load(Ordering::Acquire) || state.service.pending.is_some() {
             bail!("cannot fall back while a service operation is pending");
         }
+        if self.snapshot(state.service.clone()).service_needs_attention() {
+            bail!("service repair requires an explicit user decision before Sidecar fallback");
+        }
         // Publish the refusal and allowance together so it never asks the UI for a repair.
         state.service.health = ServiceHealth::Unavailable(reason);
         state.service.allow_sidecar();
@@ -490,6 +493,35 @@ mod tests {
 
     fn with_env(env: FakeEnv) -> RunStateStore<FakeEnv> {
         RunStateStore::new(env)
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn an_incompatible_service_requires_explicit_choice_before_sidecar() {
+        for health in [
+            ServiceHealth::VersionMismatch,
+            ServiceHealth::Unavailable("registered service did not answer".into()),
+        ] {
+            let store = with_env(FakeEnv::new());
+            store.observe(health.clone());
+
+            assert!(
+                store
+                    .allow_sidecar_after_service_refusal("startup service check failed".into())
+                    .is_err()
+            );
+            let waiting = store.state();
+            assert_eq!(waiting.health, health);
+            assert!(waiting.service_needs_attention());
+            assert!(!waiting.sidecar_allowed);
+            assert_eq!(waiting.mode, RunningMode::NotRunning);
+
+            store
+                .allow_sidecar_for_session()
+                .expect("the user may explicitly continue");
+            assert!(store.state().sidecar_allowed);
+            assert!(!store.state().service_needs_attention());
+        }
     }
 
     fn ready_reply() -> ServiceVersionReply {

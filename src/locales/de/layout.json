@@ -27,6 +27,7 @@
       "title": "Dienst-Update erforderlich",
       "message": "Die Version des Clash-Verge-Dienstes passt nicht zu der Version, die diese App benötigt. Wählen Sie „Dienst neu installieren“, um den vorhandenen Dienst zu deinstallieren und die benötigte Version zu installieren, oder fahren Sie für diese Sitzung mit Sidecar fort.",
       "checkingMessage": "Der Status des Systemdienstes und der aktuelle Betriebsmodus werden geprüft. Bitte warten…",
+      "updatingMessage": "Updating the system service and restarting the core. Windows may ask for administrator authorization. If you cancel, you can try again.",
       "unavailableMessage": "Der benötigte Clash-Verge-Dienst ist nicht verfügbar. Installieren oder reparieren Sie ihn, oder fahren Sie für diese Sitzung mit Sidecar fort.",
       "reinstall": "Dienst neu installieren",
       "repair": "Dienst reparieren",

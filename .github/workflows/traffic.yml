@@ -19,7 +19,7 @@ on:
         description: Portable edition number
         type: string
         required: true
-        default: '12'
+        default: '13'
 
 permissions:
   contents: read

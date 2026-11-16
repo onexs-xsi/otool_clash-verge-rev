@@ -27,6 +27,7 @@
       "title": "Hizmet güncellemesi gerekli",
       "message": "Clash Verge hizmet sürümü, bu uygulamanın gerektirdiği sürümle eşleşmiyor. Mevcut hizmeti kaldırıp gerekli sürümü yüklemek için hizmeti yeniden kurun ya da bu oturumda Sidecar ile devam edin.",
       "checkingMessage": "Sistem hizmetinin durumu ve geçerli çalışma modu denetleniyor. Lütfen bekleyin…",
+      "updatingMessage": "Updating the system service and restarting the core. Windows may ask for administrator authorization. If you cancel, you can try again.",
       "unavailableMessage": "Gerekli Clash Verge hizmeti kullanılamıyor. Hizmeti kurun veya onarın ya da bu oturumda Sidecar ile devam edin.",
       "reinstall": "Hizmeti yeniden kur",
       "repair": "Hizmeti onar",

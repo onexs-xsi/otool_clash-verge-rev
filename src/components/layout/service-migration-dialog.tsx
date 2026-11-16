@@ -9,6 +9,7 @@ import {
   reinstallService,
   repairService,
   restartCore,
+  type RunState,
   type ServiceInstallOutcome,
 } from '@/services/cmds'
 import { mutate } from '@/services/mutate'
@@ -137,19 +138,24 @@ export const ServiceMigrationDialog = () => {
       )
     }
 
-    let finalRefreshSucceeded = false
+    let restartedState: RunState | undefined
     try {
-      await refreshRunState()
-      finalRefreshSucceeded = true
+      restartedState = await refreshRunState()
     } catch (error) {
       showNotice.error(
         'layout.components.serviceMigration.errors.stateRefreshFailed',
         error,
       )
     }
-    if (restartSucceeded && finalRefreshSucceeded) {
-      setWorkflowIncomplete(false)
-      showNotice.success('layout.components.serviceMigration.success')
+    if (restartSucceeded && restartedState) {
+      if (restartedState.mode === 'Service' && restartedState.serviceUsable) {
+        setWorkflowIncomplete(false)
+        showNotice.success('layout.components.serviceMigration.success')
+      } else {
+        showNotice.error(
+          'settings.sections.proxyControl.messages.installedCoreNotOnService',
+        )
+      }
     }
     setLoading(false)
   }
@@ -200,19 +206,21 @@ export const ServiceMigrationDialog = () => {
             : 'layout.components.serviceMigration.reinstall',
       )}
       cancelBtn={t('layout.components.serviceMigration.continueSidecar')}
-      disableOk={checking}
-      disableCancel={checking || !canContinue}
-      loading={loading}
+      disableCancel={!canContinue && !loading}
+      cancelDisabled={checking}
+      loading={checking}
       onOk={() => void handleServiceAction()}
       onCancel={() => void handleContinue()}
     >
       <Alert severity="warning">
         {t(
-          showCheckingMessage
-            ? 'layout.components.serviceMigration.checkingMessage'
-            : remedy === 'reinstall'
-              ? 'layout.components.serviceMigration.message'
-              : 'layout.components.serviceMigration.unavailableMessage',
+          loading
+            ? 'layout.components.serviceMigration.updatingMessage'
+            : showCheckingMessage
+              ? 'layout.components.serviceMigration.checkingMessage'
+              : remedy === 'reinstall'
+                ? 'layout.components.serviceMigration.message'
+                : 'layout.components.serviceMigration.unavailableMessage',
         )}
       </Alert>
     </BaseDialog>

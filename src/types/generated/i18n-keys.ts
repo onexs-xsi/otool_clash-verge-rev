@@ -132,6 +132,7 @@ export const translationKeys = [
   'layout.components.serviceMigration.title',
   'layout.components.serviceMigration.message',
   'layout.components.serviceMigration.checkingMessage',
+  'layout.components.serviceMigration.updatingMessage',
   'layout.components.serviceMigration.unavailableMessage',
   'layout.components.serviceMigration.reinstall',
   'layout.components.serviceMigration.repair',

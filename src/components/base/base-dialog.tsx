@@ -17,6 +17,7 @@ interface Props {
   disableEnforceFocus?: boolean
   disableOk?: boolean
   disableCancel?: boolean
+  cancelDisabled?: boolean
   disableFooter?: boolean
   contentSx?: SxProps<Theme>
   children?: ReactNode
@@ -40,6 +41,7 @@ export const BaseDialog: React.FC<Props> = ({
   disableEnforceFocus,
   contentSx,
   disableCancel,
+  cancelDisabled,
   disableOk,
   disableFooter,
   loading,
@@ -60,7 +62,11 @@ export const BaseDialog: React.FC<Props> = ({
       {!disableFooter && (
         <DialogActions>
           {!disableCancel && (
-            <Button variant="outlined" onClick={onCancel}>
+            <Button
+              variant="outlined"
+              disabled={cancelDisabled}
+              onClick={onCancel}
+            >
               {cancelBtn}
             </Button>
           )}
