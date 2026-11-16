@@ -228,7 +228,8 @@ async fn refresh_tray_menu() {
 
 async fn init_window() {
     let is_silent_start = Config::verge().await.data_arc().enable_silent_start.unwrap_or(false);
-    WindowManager::create_window(!is_silent_start).await;
+    let service_requires_window = crate::core::runstate::RUN_STATE.state().service_requires_window();
+    WindowManager::create_window(!is_silent_start || service_requires_window).await;
 }
 
 #[cfg(target_os = "macos")]

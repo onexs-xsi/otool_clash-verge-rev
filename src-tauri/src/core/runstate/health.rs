@@ -86,6 +86,11 @@ impl RunState {
         )
     }
 
+    #[must_use]
+    pub const fn service_requires_window(&self) -> bool {
+        self.op_in_flight || self.service_needs_attention()
+    }
+
     /// Unknown, in-flight, and attention-required states are inconclusive.
     #[must_use]
     pub const fn tun_should_be_disabled(&self, tun_enabled: bool) -> bool {
@@ -187,6 +192,22 @@ mod tests {
     fn a_present_but_unusable_service_needs_a_decision() {
         assert!(state(ServiceHealth::VersionMismatch, false, false).service_needs_attention());
         assert!(state(ServiceHealth::Unavailable("boom".into()), false, false).service_needs_attention());
+    }
+
+    #[test]
+    fn service_authorization_keeps_a_window_until_the_decision_and_operation_finish() {
+        for health in [
+            ServiceHealth::VersionMismatch,
+            ServiceHealth::Unavailable("registered service did not answer".into()),
+        ] {
+            let mut run_state = state(health, false, false);
+            assert!(run_state.service_requires_window());
+            run_state.sidecar_allowed = true;
+            assert!(!run_state.service_requires_window());
+        }
+        assert!(state(ServiceHealth::Ready, false, true).service_requires_window());
+        assert!(!state(ServiceHealth::Ready, false, false).service_requires_window());
+        assert!(!state(ServiceHealth::NotInstalled, false, false).service_requires_window());
     }
 
     #[test]

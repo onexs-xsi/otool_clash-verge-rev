@@ -148,6 +148,10 @@ pub fn disable_auto_light_weight_mode() {
 }
 
 pub async fn entry_lightweight_mode() -> bool {
+    if crate::core::runstate::RUN_STATE.state().service_requires_window() {
+        cancel_light_weight_timer();
+        return false;
+    }
     if !try_transition(LightweightState::Normal, LightweightState::In) {
         logging!(debug, Type::Lightweight, "无需进入轻量模式，跳过调用");
         refresh_lightweight_tray_state().await;
